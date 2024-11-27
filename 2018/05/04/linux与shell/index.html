@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+
+    
+
+    
+    <title>Linux与Shell | 杨景的个人站点</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="keywords" content="linux,shell,vim,bash" />
+    
+    <meta name="description" content="Linux，你必需知道的磁盘、进程、内存  保存数据的磁盘 实际处理数据的进程 存储各种运行信息的内存  磁盘和文件Linux系统没有盘符的概念，它和所有类UNIX系统一样，有一个树型结构的文件系统。 123456789101112131415161718192021$ tree -d -L 1 &#x2F;&#x2F;├── bin -&gt; usr&#x2F;bin├── boot├── dev├── etc├── ho">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux与Shell">
+<meta property="og:url" content="https://yangjing.github.io/2018/05/04/linux%E4%B8%8Eshell/index.html">
+<meta property="og:site_name" content="杨景的个人站点">
+<meta property="og:description" content="Linux，你必需知道的磁盘、进程、内存  保存数据的磁盘 实际处理数据的进程 存储各种运行信息的内存  磁盘和文件Linux系统没有盘符的概念，它和所有类UNIX系统一样，有一个树型结构的文件系统。 123456789101112131415161718192021$ tree -d -L 1 &#x2F;&#x2F;├── bin -&gt; usr&#x2F;bin├── boot├── dev├── etc├── ho">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yangjing.github.io/img/linux_shell/stdin_out_err.png">
+<meta property="article:published_time" content="2018-05-04T15:53:15.000Z">
+<meta property="article:modified_time" content="2022-02-16T02:50:45.199Z">
+<meta property="article:author" content="杨景">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="shell">
+<meta property="article:tag" content="vim">
+<meta property="article:tag" content="bash">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yangjing.github.io/img/linux_shell/stdin_out_err.png">
+    
+
+    
+
+    
+
+    
+<link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/libs/titillium-web/styles.css">
+
+    
+<link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+<script src="/libs/jquery/3.5.0/jquery.min.js"></script>
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+
+    
+    
+    
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <div id="wrap">
+        <header id="header">
+    <div id="header-outer" class="outer">
+        <div class="container">
+            <div class="container-inner">
+                <div id="header-title">
+                    <h1 class="logo-wrap">
+                        <a href="/" class="logo"></a>
+                    </h1>
+                    
+                </div>
+                <div id="header-inner" class="nav-container">
+                    <a id="main-nav-toggle" class="nav-icon fa fa-bars"></a>
+                    <div class="nav-container-inner">
+                        <ul id="main-nav">
+                            
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/">主页</a>
+                                </li>
+                            
+                                    <ul class="main-nav-list"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/bigdata/">bigdata</a><ul class="main-nav-list-child"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/bigdata/ambari-hdp/">ambari/hdp</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/bigdata/cassandra/">cassandra</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/bigdata/elasticsearch/">elasticsearch</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/bigdata/flink/">flink</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/bigdata/greenplum/">greenplum</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/bigdata/postgresql/">postgresql</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/bigdata/pulsar/">pulsar</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/bigdata/spark/">spark</a></li></ul></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/c-c/">c/c++</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/data/">data</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/essay/">essay</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/java/">java</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/rust/">rust</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/scala/">scala</a><ul class="main-nav-list-child"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/scala/akka/">akka</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/scala/learning-scala/">learning scala</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/scala/scala%E5%AE%9E%E6%88%98/">scala实战</a></li></ul></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/unix-linux/">unix/linux</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/work/">work</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E4%BD%9C%E5%93%81/">作品</a><ul class="main-nav-list-child"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E4%BD%9C%E5%93%81/akka-cookbook/">akka-cookbook</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E4%BD%9C%E5%93%81/akka-http-chinese/">akka-http-chinese</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E4%BD%9C%E5%93%81/lecture/">lecture</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E4%BD%9C%E5%93%81/nacos-sdk-scala/">nacos-sdk-scala</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E4%BD%9C%E5%93%81/scala-web-development/">scala-web-development</a></li></ul></li></ul>
+                                
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/2016/07/26/about/">关于</a>
+                                </li>
+                            
+                        </ul>
+                        <nav id="sub-nav">
+                            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+</div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+        <div class="container">
+            <div class="main-body container-inner">
+                <div class="main-body-inner">
+                    <section id="main">
+                        <div class="main-body-header">
+    <h1 class="header">
+    
+    <a class="page-title-link" href="/categories/unix-linux/">unix/linux</a>
+    </h1>
+</div>
+
+                        <div class="main-body-content">
+                            <article id="post-linux与shell" class="article article-single article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+        Linux与Shell
+        </h1>
+    
+
+            </header>
+        
+        
+            <div class="article-meta">
+                
+  <div class="article-date">
+    <i class="fa fa-calendar"></i>
+    <a href="/2018/05/04/linux%E4%B8%8Eshell/" class="article-date">
+       <time datetime="2018-05-04T15:53:15.000Z" itemprop="datePublished">2018-05-04</time>
+    </a>
+  </div>
+
+
+<div class="article-date">
+  <i class="fa fa-calendar-plus-o"></i>
+  <a href="/2018/05/04/linux%E4%B8%8Eshell/" class="article-date">
+     <time datetime="2022-02-16T02:50:45.199Z" itemprop="dateModified">2022-02-16</time>
+  </a>
+</div>
+
+
+                
+
+                
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link-link" href="/tags/bash/" rel="tag">bash</a>, <a class="tag-link-link" href="/tags/linux/" rel="tag">linux</a>, <a class="tag-link-link" href="/tags/shell/" rel="tag">shell</a>, <a class="tag-link-link" href="/tags/vim/" rel="tag">vim</a>
+    </div>
+
+                
+
+                
+
+            </div>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+            
+
+            
+
+            
+
+            <h2 id="Linux，你必需知道的"><a href="#Linux，你必需知道的" class="headerlink" title="Linux，你必需知道的"></a>Linux，你必需知道的</h2><p><strong>磁盘、进程、内存</strong></p>
+<ul>
+<li>保存数据的磁盘</li>
+<li>实际处理数据的进程</li>
+<li>存储各种运行信息的内存</li>
+</ul>
+<h3 id="磁盘和文件"><a href="#磁盘和文件" class="headerlink" title="磁盘和文件"></a>磁盘和文件</h3><p>Linux系统没有盘符的概念，它和所有类UNIX系统一样，有一个树型结构的文件系统。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">$ tree -d -L 1 /</span><br><span class="line">/</span><br><span class="line">├── bin -&gt; usr/bin</span><br><span class="line">├── boot</span><br><span class="line">├── dev</span><br><span class="line">├── etc</span><br><span class="line">├── home</span><br><span class="line">├── lib -&gt; usr/lib</span><br><span class="line">├── lib64 -&gt; usr/lib64</span><br><span class="line">├── media</span><br><span class="line">├── mnt</span><br><span class="line">├── opt</span><br><span class="line">├── proc</span><br><span class="line">├── root</span><br><span class="line">├── run</span><br><span class="line">├── sbin -&gt; usr/sbin</span><br><span class="line">├── srv</span><br><span class="line">├── sys</span><br><span class="line">├── tmp</span><br><span class="line">├── usr</span><br><span class="line">└── var</span><br></pre></td></tr></table></figure>
+
+<h4 id="磁盘"><a href="#磁盘" class="headerlink" title="磁盘"></a>磁盘</h4><p><code>df</code> 查看系统已挂载文件系统情况，df只会显示已挂载的分区。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">df</span> -h</span></span><br><span class="line">文件系统        容量  已用  可用 已用% 挂载点</span><br><span class="line">/dev/vda1        77G  1.8G   75G    3% /</span><br><span class="line">devtmpfs        2.0G     0  2.0G    0% /dev</span><br><span class="line">tmpfs           2.0G  4.0K  2.0G    1% /dev/shm</span><br><span class="line">tmpfs           2.0G  8.4M  2.0G    1% /run</span><br><span class="line">tmpfs           2.0G     0  2.0G    0% /sys/fs/cgroup</span><br><span class="line">tmpfs           396M     0  396M    0% /run/user/1000</span><br></pre></td></tr></table></figure>
+
+<p><em>vdaX 指文件系统分区，v在这里代表KVM使用的virto虚拟文件系统，X是分区号。相应的，sata, ssd等磁盘使用s开头，传统的HHD机械硬盘使用h开头。</em></p>
+<p><code>fdisk</code> 查看磁盘硬件情况，fdisk 并不显示系统分区，显示电脑上的所有磁盘（包括未挂载磁盘）。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">sudo</span> fdisk -l</span></span><br><span class="line">[sudo] hldev 的密码：</span><br><span class="line"></span><br><span class="line">磁盘 /dev/vda：85.9 GB, 85899345920 字节，167772160 个扇区</span><br><span class="line">Units = 扇区 of 1 * 512 = 512 bytes</span><br><span class="line">扇区大小(逻辑/物理)：512 字节 / 512 字节</span><br><span class="line">I/O 大小(最小/最佳)：512 字节 / 512 字节</span><br><span class="line">磁盘标签类型：dos</span><br><span class="line">磁盘标识符：0x00097eb4</span><br><span class="line"></span><br><span class="line">   设备 Boot      Start         End      Blocks   Id  System</span><br><span class="line">/dev/vda1   *        2048   161019903    80508928   83  Linux</span><br><span class="line">/dev/vda2       161019904   167772159     3376128   82  Linux swap / Solaris</span><br></pre></td></tr></table></figure>
+
+<h3 id="进程"><a href="#进程" class="headerlink" title="进程"></a>进程</h3><p><em><strong>控制进程就等于控制Linux</strong></em></p>
+<ul>
+<li><code>fork</code>：通过父进程创建一个子进程，子进程是父进程自身的一个副本。</li>
+<li><code>exec</code>：舍弃进程原本携带信息，在进程执行时用新的程序代码替代调用进程的内容。</li>
+</ul>
+<h4 id="后台执行"><a href="#后台执行" class="headerlink" title="后台执行"></a>后台执行</h4><p>在执行命令的结尾加上 <code>&amp;</code> ，可以使程序在后台运行。如：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar app.jar &amp;</span><br></pre></td></tr></table></figure>
+
+<p>使用 <code>nohup</code> 命令，可使程序输出不打印到时前端（终端），默认将打印到 <code>nohup.out</code> 文件。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nohup java -jar app.jar &amp;</span><br></pre></td></tr></table></figure>
+
+<p><strong>Ctrl+Z</strong></p>
+<p>使在前台运行的进程后台运行。</p>
+<p><strong><code>fg</code></strong></p>
+<p>将后台进程拉回前台运行。</p>
+<h4 id="快速的数据处理管道"><a href="#快速的数据处理管道" class="headerlink" title="快速的数据处理管道"></a>快速的数据处理管道</h4><p>管道蕴含着Linux从Unix中继承的一个重要概念：</p>
+<p><strong>程序应该只关注一个目标，并尽可能把它做好。程序应能够互相协同工作。让程序处理文本数据流，这是一个通用的接口</strong></p>
+<ul>
+<li>stdin：标准输入，文件描述符 <strong>0</strong></li>
+<li>stdout：标准输出，文件描述符 <strong>1</strong></li>
+<li>stderr: 标准错误输出，文件描述符 <strong>2</strong></li>
+</ul>
+<p><img src="/img/linux_shell/stdin_out_err.png" alt="Std in, out, err"></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">cat</span></span></span><br><span class="line">您好， &lt;---- 从键盘输入</span><br><span class="line">您好， &lt;---- 在屏幕上输出相同内容</span><br><span class="line">海数！ &lt;---- 从键盘输入</span><br><span class="line">海数！ &lt;---- 在屏幕上输出相同内容</span><br><span class="line">          &lt;---- 按Ctrl+D结束</span><br></pre></td></tr></table></figure>
+
+<p><strong>管道</strong></p>
+<p><img src="/img/linux_shell/pipe.png" alt="pipe"></p>
+<p><em>管道中常用的快捷命令</em></p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>cut</td>
+<td>通过分隔符拆分后，显示指定的域</td>
+</tr>
+<tr>
+<td>grep</td>
+<td>显示与模式相匹配的行</td>
+</tr>
+<tr>
+<td>head</td>
+<td>显示文件的开始部分</td>
+</tr>
+<tr>
+<td>paste</td>
+<td>通过指定的分隔符将两个文件的各行进行合并，或者通过指定的分隔符合并一个文件中的多行</td>
+</tr>
+<tr>
+<td>sort</td>
+<td>对多行进行排序</td>
+</tr>
+<tr>
+<td>tr</td>
+<td>替换、删除字符，压缩文字序列</td>
+</tr>
+<tr>
+<td>uniq</td>
+<td>压缩连续的相同的行</td>
+</tr>
+<tr>
+<td>wc</td>
+<td>显示文件字节数、字（word）数、行数</td>
+</tr>
+</tbody></table>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">history</span> | grep &lt;...&gt;   // 从历史记录查找使用过的命令</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">ps aux | grep &lt;...&gt;    // 查找匹配的进程</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>过滤并保存系统运行的所有进程号</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">ps -ef &gt; /tmp/tmp0</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">cat</span> /tmp/tmp0 | <span class="built_in">tr</span> -s <span class="string">&quot; &quot;</span> | <span class="built_in">cut</span> -d <span class="string">&quot; &quot;</span> -f 2 | grep -v <span class="string">&quot;PID&quot;</span> &gt; /tmp/tmp1</span></span><br></pre></td></tr></table></figure>
+
+<p><em>cut 命令把 -d 选项指定的文字作为文字分隔符,仅抽取 -f 选项定位的数据(域)。这个例子中,使用空格作为分隔符。但是，由于连续的空格会被当作多个分隔符,因此要事先通过 tr 命令将连续空格转换成一个空格。</em></p>
+<h3 id="内存"><a href="#内存" class="headerlink" title="内存"></a>内存</h3><p><strong>物理地址空间和逻辑地址空间</strong></p>
+<p>物理内存分为Linux内核自身使用的区域和用户进程使用的区域。内核使用低端内存，高端内存被分配给了用户进程。低端内存中的空闲区域也将被分配给用户进程使用。</p>
+<p><img src="/img/linux_shell/memory.png" alt="Memory"></p>
+<p>进程在访问物理内存时并不直接指定物理地址，而是指定逻辑地址。内存的内核数据区域中预先设置逻辑地址和物理地址的对应“页表”，<br>然后 CPU 上搭载的 MMU(Memory Management Unit)硬件会参照该页表,自动实现对映射后物理地址上的数据的访问。</p>
+<p>为每个进程提供独立的内存空间，等于实现了进程之间的安全保护。</p>
+<p>通过 <code>/proc/meminfo</code> 系统运行内存信息文件查看内存状态</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">cat</span> /proc/meminfo</span></span><br><span class="line">MemTotal:        4046524 kB</span><br><span class="line">MemFree:         3717696 kB</span><br><span class="line">MemAvailable:    3673100 kB</span><br><span class="line">Buffers:            2076 kB</span><br><span class="line">Cached:           182044 kB</span><br><span class="line">SwapCached:            0 kB</span><br><span class="line">Active:            89820 kB  &lt;---- Active(anon) + Active(file)</span><br><span class="line">Inactive:         153048 kB  &lt;---- Inactive(anon) + Inactive(file)</span><br><span class="line">Active(anon):      59104 kB</span><br><span class="line">Inactive(anon):    46128 kB</span><br><span class="line">Active(file):      30716 kB</span><br><span class="line">Inactive(file):   106920 kB</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+
+<p>通过 <code>free</code> 命令查看内存状态</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">free</span></span><br><span class="line">              total        used        free      shared  buff/cache   available</span><br><span class="line">Mem:        4046524      115940     3717364       46484      213220     3672772</span><br><span class="line">Swap:       3376124           0     3376124</span><br></pre></td></tr></table></figure>
+<h2 id="Linux-发行版"><a href="#Linux-发行版" class="headerlink" title="Linux 发行版"></a>Linux 发行版</h2><p>Linux本身指 GNU&#x2F;Linux 内核，但只有内核一般用户是没法使用的。所以世面上就出现了很多 Linux 发行版，它打包并整理了一系列开箱即用的工具。</p>
+<h3 id="CentOS"><a href="#CentOS" class="headerlink" title="CentOS"></a>CentOS</h3><p>CentOS(Community Enterprise Operating System，中文意思是:社区企业操作系统)是Linux发行版之一，它是来自于Red Hat Enterprise Linux<br>依照开放源代码规定释出的源代码所编译而成。由于出自同样的源代码，因此有些要求高度稳定性的服务器以CentOS替代商业版的Red Hat Enterprise Linux使用。<br>两者的不同，在于CentOS并不包含封闭源代码软件。</p>
+<p>公司的服务器（测试、生产）环境使用的CentOS 7。</p>
+<h3 id="Ubuntu"><a href="#Ubuntu" class="headerlink" title="Ubuntu"></a>Ubuntu</h3><p>Ubuntu（友帮拓、优般图、乌班图）是一个以桌面应用为主的开源GNU&#x2F;Linux操作系统，Ubuntu 是基于Debian GNU&#x2F;Linux，由全球化的专业开发团队（Canonical Ltd）打造的。<br>其名称来自非洲南部祖鲁语或豪萨语的“ubuntu”一词 [2]  ，类似儒家“仁爱”的思想，意思是“人性”、“我的存在是因为大家的存在”，是非洲传统的一种价值观。</p>
+<p>公司部分开发人员的开发电脑安装了 Ubuntu 16.04 操作系统。</p>
+<h3 id="虚拟化"><a href="#虚拟化" class="headerlink" title="虚拟化"></a>虚拟化</h3><p>Linux拥有强大的虚拟化能力。常见的有：</p>
+<ul>
+<li>KVM：完全虚拟化，OpenStack默认使用它做为系统虚拟化工具</li>
+<li>Xen：完全虚拟化，类似KVM的另一套虚拟化</li>
+<li>Cgroup：半虚拟化，Docker&#x2F;k8s等容器虚拟化的核心</li>
+</ul>
+<p><img src="/img/linux_shell/email-network-virt.png" alt="Email Network virt"></p>
+<p>一个邮件发送系统的虚拟网络构成。</p>
+<h2 id="开始使用Linux"><a href="#开始使用Linux" class="headerlink" title="开始使用Linux"></a>开始使用Linux</h2><h3 id="终端"><a href="#终端" class="headerlink" title="终端"></a>终端</h3><p>终端会话是用户与shell环境打交道的地方，如果你使用的是基于图形用户界面的系统，这指的就是终端窗口。如果没有图形用户界面(生产服务器或SSH会话),那么登录后你看到的就是shell提示符。</p>
+<p>CentOS 7的终端提示如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[hldev@centos7-001 opt]$ cd /usr/local/share/</span><br><span class="line">[hldev@centos7-001 share]$ pwd</span><br><span class="line">/usr/local/share</span><br></pre></td></tr></table></figure>
+
+<p><strong>$</strong> 表示普通用户，**#** 表示管理员用户root。root是Linux系统中权限最高的用户。 </p>
+<h3 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h3><p>环境变量通常保存了可执行文件、库文件等的搜索路径列表。例如 <code>$PATH</code> 和 <code>$LD_LIBRARY_PATH</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/home/hldev/.local/bin:/home/hldev/bin</span><br></pre></td></tr></table></figure>
+
+<p>设置环境变量可以在命令行直接使用 <code>export</code> 命令：<code>export JAVA_HOME=&quot;/opt/local/jdk1.8</code>。但这样设置在系统重启后就无效了，我们可以把它写到配置文件里面。全局配置：**&#x2F;etc&#x2F;profile<strong>，用户配置：</strong>~&#x2F;.bash_prfile**。若环境变量写在配置文件内，在重启系统前默认是不会生效的，需要手动使其生效。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">. ~/.bash_profile</span><br></pre></td></tr></table></figure>
+
+<h3 id="安装软件"><a href="#安装软件" class="headerlink" title="安装软件"></a>安装软件</h3><p>在Linux下一般有两种方式来安装软件：</p>
+<ol>
+<li>使用包管理器自动安装</li>
+<li>使用源码编译安装</li>
+</ol>
+<h5 id="RPM"><a href="#RPM" class="headerlink" title="RPM"></a>RPM</h5><p>CentOS 7 使用yum包管理器安装RPM格式的软件。常用命令有：</p>
+<ol>
+<li>列出已安装包：<code>rpm -l</code></li>
+<li>用yum安装软件：<code>sudo yum install &lt;software name&gt;</code></li>
+<li>用yum更新软件：<ul>
+<li><code>sudo yum update &lt;software name&gt;</code></li>
+<li><code>sudo yum update</code>（更新系统）</li>
+</ul>
+</li>
+<li>用yum卸载软件：<code>sudo yum erase &lt;software name&gt;</code></li>
+</ol>
+<h5 id="yum"><a href="#yum" class="headerlink" title="yum"></a>yum</h5><h2 id="工具和命令"><a href="#工具和命令" class="headerlink" title="工具和命令"></a>工具和命令</h2><h3 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h3><h5 id="ls：查看文件"><a href="#ls：查看文件" class="headerlink" title="ls：查看文件"></a>ls：查看文件</h5><p><code>ls</code> 列出目录内容。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">ls</span></span></span><br><span class="line">pgdg-centos96-9.6-3.noarch.rpm  project</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">ls</span> -l</span></span><br><span class="line">总用量 8</span><br><span class="line">-rw-rw-r-- 1 hldev hldev 4824 9月  19 2017 pgdg-centos96-9.6-3.noarch.rpm</span><br><span class="line">drwxrwxr-x 2 hldev hldev    6 2月  12 13:04 project</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">ls</span> -alhF</span></span><br><span class="line"> 总用量 32K</span><br><span class="line"> drwx------. 3 hldev hldev  173 2月  12 13:04 ./</span><br><span class="line"> drwxr-xr-x. 3 root  root    19 9月  19 2017 ../</span><br><span class="line"> -rw-------. 1 hldev hldev 2.9K 5月   2 10:56 .bash_history</span><br><span class="line"> -rw-r--r--. 1 hldev hldev   18 8月   3 2017 .bash_logout</span><br><span class="line"> -rw-r--r--. 1 hldev hldev  193 8月   3 2017 .bash_profile</span><br><span class="line"> -rw-r--r--. 1 hldev hldev  231 8月   3 2017 .bashrc</span><br><span class="line"> -rw-------  1 hldev hldev   46 9月  19 2017 .lesshst</span><br><span class="line"> -rw-rw-r--  1 hldev hldev 4.8K 9月  19 2017 pgdg-centos96-9.6-3.noarch.rpm</span><br><span class="line"> drwxrwxr-x  2 hldev hldev    6 2月  12 13:04 project/</span><br><span class="line"> -rw-------  1 hldev hldev  460 9月  20 2017 .psql_history</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>-a 列出所有文件</li>
+<li>-l 列出文件明细</li>
+<li>-h 使用 human 友好的方式显示文件内容大小</li>
+<li>-F 将指示符添加到显示的项后面。如：* 可执行，&#x2F; 目录，@ 符号连接，&#x3D; UNIX套接字，</li>
+</ul>
+<h5 id="tar（解）压缩"><a href="#tar（解）压缩" class="headerlink" title="tar（解）压缩"></a>tar（解）压缩</h5><p>将多个文件压缩成一个单一文件，或相反。Linux tar 命令支持多种压缩格式。常用的有：gzip和bzip2</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">tar czf dist.tar.gz dist</span><br><span class="line">tar cjf dist.tar.bz2 dist</span><br><span class="line">tar xcf dist.tar.gz</span><br><span class="line">tar xjf dist.tar.bz2 -C /opt/haishu/var/www/auth-boot</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>-c 压缩文件，</li>
+<li>-z 使用 gzip 进行（解）压缩</li>
+<li>-j 使用 bzip2 进行（解）压缩</li>
+<li>-x 解压文件</li>
+<li>-f 指定压缩生成&#x2F;解压文件</li>
+</ul>
+<h5 id="cURL：数据传输命令行工具"><a href="#cURL：数据传输命令行工具" class="headerlink" title="cURL：数据传输命令行工具"></a>cURL：数据传输命令行工具</h5><p><strong>cURL</strong> 是传输数据到服务器或从服务器获取数据的工具，支持多种协议。如：DICT, FILE, FTP, FTPS, GOPHER, HTTP, HTTPS, IMAP, IMAPS, LDAP, LDAPS, POP3, POP3S, RTMP, RTSP, SCP, SFTP, SMB, SMBS, SMTP, SMTPS, TELNET, TFTP。</p>
+<p><strong>上传文件</strong></p>
+<ul>
+<li><code>-XPOST</code>：使用HTTP POST方法</li>
+<li><code>-F \&#39;filename=@app.jar\&#39;</code>：上传文件字段设置为filename，引用本地目录的 app.jar 文件</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -XPOST -F &#x27;filename=@app.jar&#x27;</span><br></pre></td></tr></table></figure>
+
+<p><strong>常用选项</strong></p>
+<ul>
+<li><code>--progress</code>：显示进度条</li>
+<li><code>--silent</code>：不显示进度信息</li>
+<li><code>-O</code>：设置远程文件下载到本地系统的目标文件名</li>
+<li><code>-C -</code>：支持断点续传，<code>-C</code>后面的<code>-</code>选项记cURL推断出正确的续传位置，也可以指定明确的字节偏移。</li>
+</ul>
+<h5 id="wget-命令行HTTP客户端"><a href="#wget-命令行HTTP客户端" class="headerlink" title="wget: 命令行HTTP客户端"></a>wget: 命令行HTTP客户端</h5><p><strong>下载文件</strong></p>
+<p><code>-c</code>: 断点下载文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget -c https://mirrors.aliyun.com/centos/7.4.1708/isos/x86_64/CentOS-7-x86_64-DVD-1708.iso</span><br></pre></td></tr></table></figure>
+
+<p><strong>镜像网站</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget -m -k -e robots=off https://www.hualongdata.com/</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>-e robots=off</code>：让wget耍流氓无视robots.txt协议</li>
+</ul>
+<h5 id="ps：查找进程"><a href="#ps：查找进程" class="headerlink" title="ps：查找进程"></a>ps：查找进程</h5><p>显示当前进程（所有或指定）的快照。</p>
+<p>显示系统所有进程</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps -ef</span><br></pre></td></tr></table></figure>
+
+<p>显示系统所有终端所有用户进程</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps -aux</span><br></pre></td></tr></table></figure>
+
+<h5 id="tail-监控文件"><a href="#tail-监控文件" class="headerlink" title="tail: 监控文件"></a>tail: 监控文件</h5><p>实时监控 <code>application.log</code> 日志文件最新1024行内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tail -f -n 1024 application.log</span><br></pre></td></tr></table></figure>
+
+<h5 id="top：查看系统运行状态"><a href="#top：查看系统运行状态" class="headerlink" title="top：查看系统运行状态"></a>top：查看系统运行状态</h5><p>实时显示Linux系统运行状况</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">$ top</span><br><span class="line">top - 15:47:49 up  1:03,  1 user,  load average: 0.29, 0.27, 0.42</span><br><span class="line">Tasks: 315 total,   2 running, 245 sleeping,   0 stopped,   0 zombie</span><br><span class="line">%Cpu(s):  0.5 us,  0.3 sy,  0.0 ni, 99.1 id,  0.0 wa,  0.1 hi,  0.0 si,  0.0 st</span><br><span class="line">KiB Mem : 32445240 total, 26918760 free,  3062800 used,  2463680 buff/cache</span><br><span class="line">KiB Swap: 16290812 total, 16290812 free,        0 used. 28910020 avail Mem </span><br><span class="line"></span><br><span class="line">  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND         </span><br><span class="line"> 1560 yangjing  20   0  983496 121052  75104 S   1.7  0.4   1:29.94 Xorg</span><br><span class="line"> 1809 yangjing  20   0 4449852 426112 108836 R   1.7  1.3   5:11.92 gnome-shell</span><br><span class="line"> 2710 yangjing  20   0 1200352 116584  82764 S   1.0  0.4   0:14.09 tilix</span><br><span class="line"> 6391 yangjing  20   0 7548768 360604  77256 S   0.7  1.1   0:07.54 chrome</span><br><span class="line"> 6708 yangjing  20   0  162236   4452   3708 R   0.7  0.0   0:00.15 top</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>第一行：当前时间，系统运行时长，登录用户数，平均系统负载：1分钟、5分钟、15分钟</p>
+</li>
+<li><p>第二行：任务（进程）总数，运行数，休眠数，已停止数，僵尸进程数</p>
+</li>
+<li><p>第三行：CPU运行百分比。us: 用户空间占，用户进程空间内改变过优先级的进程占，空闲CPU占，等待输入输出的CPU，硬中断（Hardware IRQ）占，软中断（Software Interrupts）占</p>
+</li>
+<li><p>第四行：物理内存总数（KB），空闲内存，已使用内存，缓存的内存</p>
+</li>
+<li><p>第五行：交换空间总数，空闲交换内存，已使用，可使用</p>
+</li>
+<li><p>PID: 进程号</p>
+</li>
+<li><p>USER: 运行进程的用户</p>
+</li>
+<li><p>PR: 进程优先级</p>
+</li>
+<li><p>NI: nice值。负值表示高优先级，正值表示低优先级</p>
+</li>
+<li><p>VIRT: 进程使用的虚拟内存总量，单位kb。VIRT&#x3D;SWAP+RES</p>
+</li>
+<li><p>RES: 进程使用的、未被换出的物理内存大小，单位kb。RES&#x3D;CODE+DATA</p>
+</li>
+<li><p>SHR: 共享内存大小，单位kb</p>
+</li>
+<li><p>S: 进程状态。D&#x3D;不可中断的睡眠状态 R&#x3D;运行 S&#x3D;睡眠 T&#x3D;跟踪&#x2F;停止 Z&#x3D;僵尸进程</p>
+</li>
+<li><p>%CPU: 上次更新到现在的CPU时间占用百分比</p>
+</li>
+<li><p>%MEM: 进程使用的物理内存百分比</p>
+</li>
+<li><p>TIME+: 进程使用的CPU时间总计，单位1&#x2F;100秒</p>
+</li>
+<li><p>COMMAND: 进程名称（命令名&#x2F;命令行）</p>
+</li>
+</ul>
+<h5 id="用户管理"><a href="#用户管理" class="headerlink" title="用户管理"></a>用户管理</h5><p><strong>group</strong></p>
+<p>创建用户组：<code>groupadd -g 1100 devops</code>。创建一个组：devops，并指定组GID为1100</p>
+<p><strong>user</strong></p>
+<p>创建用户：<code>useradd -u 1100 -g 1100 -G wheel -k -m -d /home/devops devops</code>。</p>
+<ul>
+<li><code>-u</code>: 指定用户UID</li>
+<li><code>-g</code>: 指定组GID，需要存在</li>
+<li><code>-G</code>: 指定附加组，需要存在</li>
+<li><code>-k</code>: 骨架目录中的文件和目录将被拷贝到用户主目录</li>
+<li><code>-m</code>: 若 <code>-d</code> 指定目录不存在则创建</li>
+<li><code>-d</code>: 指定用户主目录</li>
+</ul>
+<h5 id="ssh"><a href="#ssh" class="headerlink" title="ssh"></a>ssh</h5><p><strong>ssh</strong></p>
+<p>OpenSSH客户端</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ssh -p 22222 hldev@centos7-001</span><br></pre></td></tr></table></figure>
+
+<p><strong>sftp</strong></p>
+<p>基于SSH协议的FTP客户端，可以通过SSH登录服务器并使用FTP协议上传、下载文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">$ sftp hldev@centos7-001</span><br><span class="line">hldev@centos7-001&#x27;s password: </span><br><span class="line">Connected to centos7-001.</span><br><span class="line">sftp&gt; ls</span><br><span class="line">README.md                         pgdg-centos96-9.6-3.noarch.rpm    project                           </span><br><span class="line">sftp&gt; get pgdg-centos96-9.6-3.noarch.rpm </span><br><span class="line">Fetching /home/hldev/pgdg-centos96-9.6-3.noarch.rpm to pgdg-centos96-9.6-3.noarch.rpm</span><br><span class="line">/home/hldev/pgdg-centos96-9.6-3.noarch.rpm                                                            100% 4824    47.0KB/s   00:00</span><br><span class="line">sftp&gt; !ls</span><br><span class="line">assets	pgdg-centos96-9.6-3.noarch.rpm	README.html  README.md</span><br><span class="line">sftp&gt; put README.html</span><br><span class="line">Uploading README.html to /home/hldev/README.html</span><br><span class="line">README.html                                                                                           100%   10KB  25.2MB/s   00:00 </span><br><span class="line">sftp&gt; ls</span><br><span class="line">README.html                       README.md                         pgdg-centos96-9.6-3.noarch.rpm    project</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>put: 上传本地文件到服务器</li>
+<li>get: 从服务器下载文件</li>
+<li>!command: 命令前添加!，命令将在本地执行。</li>
+</ul>
+<p><code>put</code>, <code>get</code> 命令还有些参数可以设置，常用如下：</p>
+<ul>
+<li>-P: 同步完整的文件权限的访问时间</li>
+<li>-r: 递归拷贝目录内的所有文件</li>
+</ul>
+<p><strong>scp</strong></p>
+<p>基于SSH协议的文件拷贝工具，可以将本地文件拷贝到远程服务器。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ scp README.md hldev@centos7-001:/home/hldev/</span><br><span class="line">hldev@centos7-001&#x27;s password: </span><br><span class="line">README.md</span><br></pre></td></tr></table></figure>
+
+<h2 id="VIM，编辑器之神"><a href="#VIM，编辑器之神" class="headerlink" title="VIM，编辑器之神"></a>VIM，编辑器之神</h2><p><em>CentOS系统默认只安装了VI，要使用VIM需要安装：<code>sudo yum -y install vim</code></em></p>
+<p>VIM全称是：Vi IMproved。改进的Vi，程序员的文本编辑器。VIM被称为编辑器之神。使用 VIM 非常简单，在终端输入 <code>vim</code> 即可。VIM支持全键盘操作，<br>不需要使用鼠标即可操作，可显著提供工作效率。</p>
+<p>同时也可以指定要打开的文件。打开 vim 时可以使用参数，比如：<code>-R</code> 只读模式。在使用VIM查看比较大的日志文件等时候可以防止误操作修改文件。</p>
+<p>VIM运行时有三种模式：</p>
+<ul>
+<li>Normal模式：在Normal模式下，用户可以移动光标、操纵文字、输入各种控制操作</li>
+<li>Edit模式：顾名思义，编辑模式下可以输入内容。</li>
+<li>Command模式（指令模式）：在Normal模式下，按 <code>shift+;</code>（输入英文冒号）则可进入指令模式。当编辑器下部出现闪烁的英文冒号时既进入指令模式。</li>
+</ul>
+<p>使用VIM打开本文 <code>vim README.md</code>，默认处于 Normal 模式。</p>
+<p><img src="/img/linux_shell/vim-open-file.png" alt="VIM open file"></p>
+<h3 id="VIM-基本使用"><a href="#VIM-基本使用" class="headerlink" title="VIM 基本使用"></a>VIM 基本使用</h3><p>这时，可以使用键盘上的 H、J、K、L 4个键移动光标，分别为：向左、上、下、右移动。当光标移动到期望的位置后可以有多种方法进入Edit（编辑）模式。<br><code>i</code>：在光标指定字符前进入编辑模式，<code>a</code>：在光标指定字符后进入编辑模式，<code>s</code>：替换光标指定字符并进入编辑模式。</p>
+<p>退出Edit模式有两种方法：</p>
+<ol>
+<li>按 <code>Esc</code> 键退出Edit模式并进入Normal模式</li>
+<li>按 <code>ctrl+[</code> 组合键</li>
+</ol>
+<h3 id="VIM技巧"><a href="#VIM技巧" class="headerlink" title="VIM技巧"></a>VIM技巧</h3><h5 id="保存和退出（Command模式）"><a href="#保存和退出（Command模式）" class="headerlink" title="保存和退出（Command模式）"></a>保存和退出（Command模式）</h5><p>输入 <code>w</code> 将保存当前编辑内容，若是打开的新文件可以在 <code>w</code> 后输入需要保存的文件名。</p>
+<p>输入 <code>q</code> 将退出VIM，退出前必需保存已编辑内容。若想放弃当前编辑内容并退出，输入 <code>q!</code> 。</p>
+<p><code>w</code>, <code>q</code> 可以组合输入。比如保存并退出：<code>wq</code>。</p>
+<h5 id="快速移动（Normal模式）"><a href="#快速移动（Normal模式）" class="headerlink" title="快速移动（Normal模式）"></a>快速移动（Normal模式）</h5><p><strong>翻页</strong></p>
+<p><code>ctrl-f</code> 向前翻一页，<code>ctrl-b</code> 向后翻一页（向前翻页时VIM将保留之前页的最后两行）。</p>
+<p><strong>快速定位到文本开头或结尾</strong></p>
+<p>连按两次 <code>g</code> 键将光标移动到整个文本开头，<code>shift+g</code>将移动光标到整个文本结尾。</p>
+<h5 id="复制、粘贴行（Normal模式）"><a href="#复制、粘贴行（Normal模式）" class="headerlink" title="复制、粘贴行（Normal模式）"></a>复制、粘贴行（Normal模式）</h5><p>连续按两次 <code>y</code> 键复制单行，在需要粘贴的地方使用 <code>p</code> 键进行粘贴（将粘贴到光标所在行之下）。</p>
+<p><strong>复制多行</strong></p>
+<p>按 <code>shift+v</code> 组合键可以高亮一行，这时可以使用 J、K 进行上下移动，选中需要的多行后再按 <code>y</code> 键即可复制多行。</p>
+<h5 id="撤销、恢复编辑（Normal模式）"><a href="#撤销、恢复编辑（Normal模式）" class="headerlink" title="撤销、恢复编辑（Normal模式）"></a>撤销、恢复编辑（Normal模式）</h5><p>在Normal模式下按 <code>u</code> 键将撤销最后一次编辑（每次保存文件算一次编辑）。按 <code>ctrl+r</code> 将恢复撤销。撤销和恢复可进行多次。</p>
+<h5 id="自动补全（Edit模式）"><a href="#自动补全（Edit模式）" class="headerlink" title="自动补全（Edit模式）"></a>自动补全（Edit模式）</h5><p>在需要实例的文字后按 <code>ctrl+c ctrl+p</code> 会弹出自动补全选择框，这里可以使用 <code>ctrl+n</code> 或 <code>ctrl+p</code> 进行向下、向下移动，选中需要实例的单词后按 <code>Enter</code> 键即可。</p>
+<h5 id="将本地路径录入文本（Edit模式）"><a href="#将本地路径录入文本（Edit模式）" class="headerlink" title="将本地路径录入文本（Edit模式）"></a>将本地路径录入文本（Edit模式）</h5><p>使用 <code>ctrl+c ctrl+f</code> 将弹出本地路径选择框（相对当前编辑文本路径），移动光标选中需要的路径，按 <code>Enter</code> 键后录入到文本中。</p>
+<h3 id="VIM配置"><a href="#VIM配置" class="headerlink" title="VIM配置"></a>VIM配置</h3><p>可以自定义VIM配置，VIM的配置文件为：<code>.vimrc</code>，一般在用户主目录下。编辑配置文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ vim ~/.vimrc</span><br></pre></td></tr></table></figure>
+
+<p>输入以下内容打开高亮和自动缩进。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">syntax on</span><br><span class="line">set ai</span><br></pre></td></tr></table></figure>
+
+<h2 id="Shell"><a href="#Shell" class="headerlink" title="Shell"></a>Shell</h2><p>Shell是用户使用Linux的桥梁，它既是一种命令语言，又是一种程序。在Linux下，一般默认使用的是 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Bash_(Unix_shell)">Bash</a>。以下内容非特殊说明，默认使用的Bash。</p>
+<h3 id="Bash脚本"><a href="#Bash脚本" class="headerlink" title="Bash脚本"></a>Bash脚本</h3><p>可以将一系列命令放到一个脚本文件中自动执行，一般这类脚本文件都以 <code>.sh</code> 结尾。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/env bash</span><br><span class="line"></span><br><span class="line"># $1, $2, $x, .... 代表输入的第一、第二、第三个命令行参数</span><br><span class="line">echo $1 $2</span><br><span class="line"></span><br><span class="line"># $@ 代表所有命令行参数</span><br><span class="line">echo $@</span><br><span class="line"></span><br><span class="line">if [ ! $JAVA_OPTS ]; then</span><br><span class="line">  JAVA_OPTS=&#x27; -Xmx1G -Xms1G &#x27;</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line"># 执行Java程序</span><br><span class="line">java $JAVA_OPTS -jar application.jar $@</span><br></pre></td></tr></table></figure>
+
+<p>上面是一个普通的shell脚本，使用Bash执行。</p>
+
+        </div>
+        <footer class="article-footer">
+            
+
+
+
+    <a data-url="https://yangjing.github.io/2018/05/04/linux%E4%B8%8Eshell/" data-id="cm3zb1i5z005pq5f64e6z6wow" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+<script>
+    (function ($) {
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+        </footer>
+    </div>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "author": {
+            "@type": "Person",
+            "name": "杨景"
+        },
+        "headline": "Linux与Shell",
+        "image": "https://yangjing.github.io/img/linux_shell/stdin_out_err.png",
+        "keywords": "linux shell vim bash",
+        "genre": "unix/linux",
+        "datePublished": "2018-05-04",
+        "dateCreated": "2018-05-04",
+        "dateModified": "2022-02-16",
+        "url": "https://yangjing.github.io/2018/05/04/linux与shell/",
+        "description": "Linux，你必需知道的磁盘、进程、内存
+
+保存数据的磁盘
+实际处理数据的进程
+存储各种运行信息的内存
+
+磁盘和文件Linux系统没有盘符的概念，它和所有类UNIX系统一样，有一个树型结构的文件系统。
+123456789101112131415161718192021$ tree -d -L 1 //├── bin -&gt; usr/bin├── boot├── dev├── etc├── ho",
+        "wordCount": 2243
+    }
+</script>
+
+</article>
+
+    <section id="comments">
+    
+    </section>
+
+
+
+                        </div>
+                    </section>
+                    <aside id="sidebar">
+    <a class="sidebar-toggle" title="Expand Sidebar"><i class="toggle icon"></i></a>
+    <div class="sidebar-top">
+        <p>关注我 :</p>
+        <ul class="social-links">
+            
+                
+                <li>
+                    <a class="social-tooltip" title="github" href="https://github.com/yangjing" target="_blank" rel="noopener">
+                        <i class="icon fa fa-github"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="twitter" href="https://twitter.com/yangbajing1" target="_blank" rel="noopener">
+                        <i class="icon fa fa-twitter"></i>
+                    </a>
+                </li>
+                
+            
+        </ul>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2018/06/25/ambari2-6%EF%BC%88hdp2-6-5%EF%BC%89%E5%AE%89%E8%A3%85%E8%AE%B0%E8%A6%81/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">下一篇</strong>
+        <p class="article-nav-title">
+        
+            Ambari2.6（HDP2.6.5）安装记要
+        
+        </p>
+        <i class="icon fa fa-chevron-right" id="icon-chevron-right"></i>
+    </a>
+    
+    
+        <a href="/2018/02/05/postgresql%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E4%B8%8D%E5%90%8E%E6%82%94/" id="article-nav-older" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">上一篇</strong>
+        <p class="article-nav-title">PostgreSQL从入门到不后悔</p>
+        <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
+        </a>
+    
+</nav>
+
+    
+    <div class="widgets-container">
+        
+            
+                
+
+            
+                
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="no-thumbnail">
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/rust/">rust</a></p>
+                            <p class="item-title"><a href="/2024/11/26/Rust%EF%BC%9A%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5/" class="title">Rust：依赖注入</a></p>
+                            <p class="item-date"><time datetime="2024-11-26T03:12:37.000Z" itemprop="datePublished">2024-11-26</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/essay/">essay</a></p>
+                            <p class="item-title"><a href="/2024/10/12/%E9%80%9A%E7%94%A8%E5%88%86%E5%B8%83%E5%BC%8F%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/" class="title">通用分布式任务调度系统设计</a></p>
+                            <p class="item-date"><time datetime="2024-10-12T04:58:55.000Z" itemprop="datePublished">2024-10-12</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"></p>
+                            <p class="item-title"><a href="/2024/09/25/docs-%E6%92%B0%E5%86%99%E3%80%8ARust-gRPC-%E7%BC%96%E8%AF%91%E6%89%8B%E5%86%8C%EF%BC%9Atonic-build%E3%80%8B/" class="title">docs: 撰写《Rust gRPC 编译手册：tonic-build》</a></p>
+                            <p class="item-date"><time datetime="2024-09-25T09:39:09.000Z" itemprop="datePublished">2024-09-25</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/rust/">rust</a></p>
+                            <p class="item-title"><a href="/2024/09/25/Rust-gRPC-%E7%BC%96%E8%AF%91%E6%89%8B%E5%86%8C%EF%BC%9Atonic-build/" class="title">Rust gRPC 编译手册：tonic-build</a></p>
+                            <p class="item-date"><time datetime="2024-09-25T00:02:30.000Z" itemprop="datePublished">2024-09-25</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/rust/">rust</a></p>
+                            <p class="item-title"><a href="/2024/09/24/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA-gRPC-Web%EF%BC%9A%E4%BD%BF%E7%94%A8-tonic-%E5%92%8C-nice-grpc/" class="title">深入浅出 gRPC-Web：使用 tonic 和 nice-grpc</a></p>
+                            <p class="item-date"><time datetime="2024-09-24T05:34:06.000Z" itemprop="datePublished">2024-09-24</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/bigdata/">bigdata</a><span class="category-list-count">24</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/bigdata/ambari-hdp/">ambari/hdp</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/bigdata/cassandra/">cassandra</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/bigdata/elasticsearch/">elasticsearch</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/bigdata/flink/">flink</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/bigdata/greenplum/">greenplum</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/bigdata/postgresql/">postgresql</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/bigdata/pulsar/">pulsar</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/bigdata/spark/">spark</a><span class="category-list-count">4</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/c-c/">c/c++</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/data/">data</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/essay/">essay</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/rust/">rust</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/scala/">scala</a><span class="category-list-count">43</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/scala/akka/">akka</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/scala/learning-scala/">learning scala</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/scala/scala%E5%AE%9E%E6%88%98/">scala实战</a><span class="category-list-count">4</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/unix-linux/">unix/linux</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/work/">work</a><span class="category-list-count">20</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BD%9C%E5%93%81/">作品</a><span class="category-list-count">5</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BD%9C%E5%93%81/akka-cookbook/">akka-cookbook</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BD%9C%E5%93%81/akka-http-chinese/">akka-http-chinese</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BD%9C%E5%93%81/lecture/">lecture</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BD%9C%E5%93%81/nacos-sdk-scala/">nacos-sdk-scala</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BD%9C%E5%93%81/scala-web-development/">scala-web-development</a><span class="category-list-count">1</span></li></ul></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/11/">十一月 2024</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/10/">十月 2024</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/09/">九月 2024</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/08/">八月 2024</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/07/">七月 2024</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/06/">六月 2024</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/04/">四月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">九月 2021</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">十一月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">九月 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">八月 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">六月 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">三月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">十二月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">九月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/05/">五月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/02/">二月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/01/">一月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/02/">二月 2012</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/10/">十月 2011</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/09/">九月 2011</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2010/10/">十月 2010</a><span class="archive-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">标签</h3>
+        <div class="widget">
+            <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/4a/" rel="tag">4a</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DDD/" rel="tag">DDD</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Go/" rel="tag">Go</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Node/" rel="tag">Node</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/" rel="tag">Python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scala/" rel="tag">Scala</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sphinx-%E6%92%B0%E5%86%99-%E7%94%B5%E5%AD%90%E6%96%87%E6%A1%A3/" rel="tag">Sphinx 撰写 电子文档</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/about/" rel="tag">about</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/access-token/" rel="tag">access_token</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/accesstoken/" rel="tag">accesstoken</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/activemq/" rel="tag">activemq</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka/" rel="tag">akka</a><span class="tag-list-count">29</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka-http/" rel="tag">akka http</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka-2-6/" rel="tag">akka-2.6</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka-cluster/" rel="tag">akka-cluster</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka-cluster-sharding/" rel="tag">akka-cluster-sharding</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka-cookbook/" rel="tag">akka-cookbook</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka-grpc/" rel="tag">akka-grpc</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka-http/" rel="tag">akka-http</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka-http-chinese/" rel="tag">akka-http-chinese</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka-http-testkit/" rel="tag">akka-http-testkit</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka-log/" rel="tag">akka-log</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka-persistence/" rel="tag">akka-persistence</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka-stream/" rel="tag">akka-stream</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka-streams/" rel="tag">akka-streams</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka-typed/" rel="tag">akka-typed</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka%E5%AE%9E%E6%88%98/" rel="tag">akka实战</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alpakka/" rel="tag">alpakka</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alpakka-kafka/" rel="tag">alpakka-kafka</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ambari/" rel="tag">ambari</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/api/" rel="tag">api</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/api-design/" rel="tag">api-design</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/at-least-once-delivery/" rel="tag">at-least-once-delivery</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/axum/" rel="tag">axum</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bash/" rel="tag">bash</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/batch-insert/" rel="tag">batch-insert</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/book/" rel="tag">book</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/" rel="tag">c</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/" rel="tag">c++</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cassandra/" rel="tag">cassandra</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdc/" rel="tag">cdc</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/centos/" rel="tag">centos</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/centos7/" rel="tag">centos7</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/clap/" rel="tag">clap</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cluster/" rel="tag">cluster</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cluster-distributedata/" rel="tag">cluster-distributedata</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cluster-sharding/" rel="tag">cluster-sharding</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cluster-singleton/" rel="tag">cluster-singleton</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/collection/" rel="tag">collection</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/config/" rel="tag">config</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/coordinated-shutdown/" rel="tag">coordinated-shutdown</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cqrs/" rel="tag">cqrs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/crawler/" rel="tag">crawler</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/debezium/" rel="tag">debezium</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dependency-injection/" rel="tag">dependency-injection</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/design-pattern/" rel="tag">design-pattern</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/devops/" rel="tag">devops</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/distribution/" rel="tag">distribution</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/eclipse/" rel="tag">eclipse</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/either/" rel="tag">either</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elasticsearch/" rel="tag">elasticsearch</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elt/" rel="tag">elt</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/email/" rel="tag">email</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/enum/" rel="tag">enum</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/etl/" rel="tag">etl</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/event-sourced/" rel="tag">event-sourced</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/exactly-once/" rel="tag">exactly-once</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/firewall/" rel="tag">firewall</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/" rel="tag">flink</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/functional/" rel="tag">functional</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/functions/" rel="tag">functions</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/fusion-log/" rel="tag">fusion-log</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/future/" rel="tag">future</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gatling/" rel="tag">gatling</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gitlab/" rel="tag">gitlab</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gradle/" rel="tag">gradle</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/greenplum/" rel="tag">greenplum</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grpc/" rel="tag">grpc</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grpc-rust-tonic-prost-protobuf/" rel="tag">grpc, rust, tonic, prost, protobuf</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grpc-web-tonic-nice-grpc-rust-nextjs/" rel="tag">grpc-web, tonic, nice-grpc, rust, nextjs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hadoop/" rel="tag">hadoop</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hanlp/" rel="tag">hanlp</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hdp/" rel="tag">hdp</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/" rel="tag">hive</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/html5/" rel="tag">html5</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http-2/" rel="tag">http-2</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/https/" rel="tag">https</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/idea/" rel="tag">idea</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jackson/" rel="tag">jackson</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jackson-module-scala/" rel="tag">jackson-module-scala</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jdbc/" rel="tag">jdbc</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jenkins/" rel="tag">jenkins</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jenkins-pipeline/" rel="tag">jenkins-pipeline</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jenkinsfile/" rel="tag">jenkinsfile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jquery/" rel="tag">jquery</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/json/" rel="tag">json</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/json4s/" rel="tag">json4s</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/" rel="tag">kafka</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/liftweb/" rel="tag">liftweb</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/log/" rel="tag">log</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/logical-replication/" rel="tag">logical replication</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/logrotate/" rel="tag">logrotate</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mac/" rel="tag">mac</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/macros/" rel="tag">macros</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mass-data/" rel="tag">mass-data</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mass-rdi/" rel="tag">mass-rdi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/" rel="tag">maven</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mybatis/" rel="tag">mybatis</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mybatis-plus/" rel="tag">mybatis-plus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nacos/" rel="tag">nacos</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neokylin/" rel="tag">neokylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/network/" rel="tag">network</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oauth-2/" rel="tag">oauth-2</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oauth2/" rel="tag">oauth2</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/obs/" rel="tag">obs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/opendal/" rel="tag">opendal</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/option/" rel="tag">option</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oracle/" rel="tag">oracle</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/" rel="tag">oss</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/outofmemory/" rel="tag">outofmemory</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pdf/" rel="tag">pdf</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/play/" rel="tag">play</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/playframework/" rel="tag">playframework</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/postgresql/" rel="tag">postgresql</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/process/" rel="tag">process</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/promise/" rel="tag">promise</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/proto-2/" rel="tag">proto 2</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/proto-3/" rel="tag">proto 3</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/protobuf/" rel="tag">protobuf</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/proxy/" rel="tag">proxy</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pulsar/" rel="tag">pulsar</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/qt/" rel="tag">qt</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/r2dbc/" rel="tag">r2dbc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/reactive/" rel="tag">reactive</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/reactivemongo/" rel="tag">reactivemongo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/reactivestream/" rel="tag">reactivestream</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/reactor/" rel="tag">reactor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/realtime-etl/" rel="tag">realtime-etl</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/replication/" rel="tag">replication</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/rest/" rel="tag">rest</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/route/" rel="tag">route</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/rust/" rel="tag">rust</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/rust-grpc-grpc-web-tonic-nextjs/" rel="tag">rust, grpc, grpc-web, tonic, nextjs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/" rel="tag">sbt</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scala/" rel="tag">scala</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scala-akka-actor/" rel="tag">scala, akka, actor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scala-logging/" rel="tag">scala-logging</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scala-script/" rel="tag">scala-script</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scala-web/" rel="tag">scala-web</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scalatest/" rel="tag">scalatest</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scala%E5%AE%9E%E6%88%98/" rel="tag">scala实战</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scheduler/" rel="tag">scheduler</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/script/" rel="tag">script</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sea-query/" rel="tag">sea-query</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/slf4j/" rel="tag">slf4j</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/slick/" rel="tag">slick</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/slick-pg/" rel="tag">slick-pg</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark-sql/" rel="tag">spark sql</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sphinx-doc/" rel="tag">sphinx-doc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring/" rel="tag">spring</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-boot/" rel="tag">spring-boot</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-cloud/" rel="tag">spring-cloud</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-log/" rel="tag">spring-log</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlx/" rel="tag">sqlx</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssl/" rel="tag">ssl</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssl-config/" rel="tag">ssl-config</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/system-manager/" rel="tag">system-manager</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tengine/" rel="tag">tengine</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/test/" rel="tag">test</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tokio/" rel="tag">tokio</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/toml/" rel="tag">toml</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/top-k/" rel="tag">top-k</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/try/" rel="tag">try</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unix/" rel="tag">unix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/upgrading/" rel="tag">upgrading</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/upstream/" rel="tag">upstream</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/user-system/" rel="tag">user-system</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/" rel="tag">vim</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vm-overcommit-memory/" rel="tag">vm.overcommit_memory</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vue/" rel="tag">vue</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/wal/" rel="tag">wal</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/webflux/" rel="tag">webflux</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AD%E6%96%87%E5%AD%97%E7%AC%A6%E9%9B%86/" rel="tag">中文字符集</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%92%E6%93%8D%E4%BD%9C/" rel="tag">互操作</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%85%A5%E9%97%A8/" rel="tag">入门</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%8E%E4%B8%BA%E4%BA%91/" rel="tag">华为云</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/" rel="tag">反向代理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E4%BD%9C/" rel="tag">工作</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BE%AE%E4%BF%A1%E5%BC%80%E5%8F%91/" rel="tag">微信开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" rel="tag">微服务</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84/" rel="tag">技术架构</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8A%80%E6%9C%AF%E9%80%89%E5%9E%8B/" rel="tag">技术选型</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%96%AD%E7%82%B9%E4%B8%8A%E4%BC%A0/" rel="tag">断点上传</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%96%AD%E7%82%B9%E4%B8%8B%E8%BD%BD/" rel="tag">断点下载</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B4%BB%E5%8A%A8%E6%8A%A5%E5%90%8D/" rel="tag">活动报名</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F/" rel="tag">环境变量</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AD%96%E6%9C%8D%E5%8A%A1/" rel="tag">策服务</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/" rel="tag">负载均衡</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84/" rel="tag">软件架构</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%BB%E8%BE%91%E5%A4%8D%E5%88%B6/" rel="tag">逻辑复制</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%85%8D%E7%BD%AE/" rel="tag">配置</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%BF%E9%87%8C%E4%BA%91/" rel="tag">阿里云</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9B%86%E7%BE%A4/" rel="tag">集群</a><span class="tag-list-count">4</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-float">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/4a/" style="font-size: 10px;">4a</a> <a href="/tags/DDD/" style="font-size: 10px;">DDD</a> <a href="/tags/Go/" style="font-size: 10px;">Go</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Node/" style="font-size: 10px;">Node</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Scala/" style="font-size: 10px;">Scala</a> <a href="/tags/Sphinx-%E6%92%B0%E5%86%99-%E7%94%B5%E5%AD%90%E6%96%87%E6%A1%A3/" style="font-size: 10px;">Sphinx 撰写 电子文档</a> <a href="/tags/about/" style="font-size: 10px;">about</a> <a href="/tags/access-token/" style="font-size: 10px;">access_token</a> <a href="/tags/accesstoken/" style="font-size: 10px;">accesstoken</a> <a href="/tags/activemq/" style="font-size: 10px;">activemq</a> <a href="/tags/akka/" style="font-size: 19px;">akka</a> <a href="/tags/akka-http/" style="font-size: 11px;">akka http</a> <a href="/tags/akka-2-6/" style="font-size: 10px;">akka-2.6</a> <a href="/tags/akka-cluster/" style="font-size: 13px;">akka-cluster</a> <a href="/tags/akka-cluster-sharding/" style="font-size: 10px;">akka-cluster-sharding</a> <a href="/tags/akka-cookbook/" style="font-size: 10px;">akka-cookbook</a> <a href="/tags/akka-grpc/" style="font-size: 14px;">akka-grpc</a> <a href="/tags/akka-http/" style="font-size: 16px;">akka-http</a> <a href="/tags/akka-http-chinese/" style="font-size: 10px;">akka-http-chinese</a> <a href="/tags/akka-http-testkit/" style="font-size: 10px;">akka-http-testkit</a> <a href="/tags/akka-log/" style="font-size: 10px;">akka-log</a> <a href="/tags/akka-persistence/" style="font-size: 14px;">akka-persistence</a> <a href="/tags/akka-stream/" style="font-size: 12px;">akka-stream</a> <a href="/tags/akka-streams/" style="font-size: 11px;">akka-streams</a> <a href="/tags/akka-typed/" style="font-size: 12px;">akka-typed</a> <a href="/tags/akka%E5%AE%9E%E6%88%98/" style="font-size: 10px;">akka实战</a> <a href="/tags/alpakka/" style="font-size: 10px;">alpakka</a> <a href="/tags/alpakka-kafka/" style="font-size: 10px;">alpakka-kafka</a> <a href="/tags/ambari/" style="font-size: 11px;">ambari</a> <a href="/tags/api/" style="font-size: 11px;">api</a> <a href="/tags/api-design/" style="font-size: 10px;">api-design</a> <a href="/tags/at-least-once-delivery/" style="font-size: 10px;">at-least-once-delivery</a> <a href="/tags/axum/" style="font-size: 10px;">axum</a> <a href="/tags/bash/" style="font-size: 10px;">bash</a> <a href="/tags/batch-insert/" style="font-size: 10px;">batch-insert</a> <a href="/tags/book/" style="font-size: 11px;">book</a> <a href="/tags/c/" style="font-size: 12px;">c</a> <a href="/tags/c/" style="font-size: 11px;">c++</a> <a href="/tags/cassandra/" style="font-size: 14px;">cassandra</a> <a href="/tags/cdc/" style="font-size: 12px;">cdc</a> <a href="/tags/centos/" style="font-size: 10px;">centos</a> <a href="/tags/centos7/" style="font-size: 11px;">centos7</a> <a href="/tags/clap/" style="font-size: 10px;">clap</a> <a href="/tags/cluster/" style="font-size: 12px;">cluster</a> <a href="/tags/cluster-distributedata/" style="font-size: 10px;">cluster-distributedata</a> <a href="/tags/cluster-sharding/" style="font-size: 10px;">cluster-sharding</a> <a href="/tags/cluster-singleton/" style="font-size: 10px;">cluster-singleton</a> <a href="/tags/collection/" style="font-size: 10px;">collection</a> <a href="/tags/config/" style="font-size: 11px;">config</a> <a href="/tags/coordinated-shutdown/" style="font-size: 10px;">coordinated-shutdown</a> <a href="/tags/cqrs/" style="font-size: 10px;">cqrs</a> <a href="/tags/crawler/" style="font-size: 10px;">crawler</a> <a href="/tags/debezium/" style="font-size: 10px;">debezium</a> <a href="/tags/dependency-injection/" style="font-size: 10px;">dependency-injection</a> <a href="/tags/design-pattern/" style="font-size: 10px;">design-pattern</a> <a href="/tags/devops/" style="font-size: 11px;">devops</a> <a href="/tags/distribution/" style="font-size: 10px;">distribution</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/eclipse/" style="font-size: 10px;">eclipse</a> <a href="/tags/either/" style="font-size: 10px;">either</a> <a href="/tags/elasticsearch/" style="font-size: 12px;">elasticsearch</a> <a href="/tags/elt/" style="font-size: 10px;">elt</a> <a href="/tags/email/" style="font-size: 10px;">email</a> <a href="/tags/enum/" style="font-size: 12px;">enum</a> <a href="/tags/etl/" style="font-size: 11px;">etl</a> <a href="/tags/event-sourced/" style="font-size: 10px;">event-sourced</a> <a href="/tags/exactly-once/" style="font-size: 10px;">exactly-once</a> <a href="/tags/firewall/" style="font-size: 10px;">firewall</a> <a href="/tags/flink/" style="font-size: 11px;">flink</a> <a href="/tags/functional/" style="font-size: 10px;">functional</a> <a href="/tags/functions/" style="font-size: 10px;">functions</a> <a href="/tags/fusion-log/" style="font-size: 10px;">fusion-log</a> <a href="/tags/future/" style="font-size: 10px;">future</a> <a href="/tags/gatling/" style="font-size: 10px;">gatling</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/gitlab/" style="font-size: 10px;">gitlab</a> <a href="/tags/gradle/" style="font-size: 10px;">gradle</a> <a href="/tags/greenplum/" style="font-size: 10px;">greenplum</a> <a href="/tags/grpc/" style="font-size: 14px;">grpc</a> <a href="/tags/grpc-rust-tonic-prost-protobuf/" style="font-size: 10px;">grpc, rust, tonic, prost, protobuf</a> <a href="/tags/grpc-web-tonic-nice-grpc-rust-nextjs/" style="font-size: 10px;">grpc-web, tonic, nice-grpc, rust, nextjs</a> <a href="/tags/hadoop/" style="font-size: 11px;">hadoop</a> <a href="/tags/hanlp/" style="font-size: 10px;">hanlp</a> <a href="/tags/hdp/" style="font-size: 11px;">hdp</a> <a href="/tags/hive/" style="font-size: 10px;">hive</a> <a href="/tags/html5/" style="font-size: 10px;">html5</a> <a href="/tags/http-2/" style="font-size: 10px;">http-2</a> <a href="/tags/https/" style="font-size: 10px;">https</a> <a href="/tags/idea/" style="font-size: 10px;">idea</a> <a href="/tags/jackson/" style="font-size: 13px;">jackson</a> <a href="/tags/jackson-module-scala/" style="font-size: 10px;">jackson-module-scala</a> <a href="/tags/java/" style="font-size: 18px;">java</a> <a href="/tags/jdbc/" style="font-size: 11px;">jdbc</a> <a href="/tags/jenkins/" style="font-size: 11px;">jenkins</a> <a href="/tags/jenkins-pipeline/" style="font-size: 10px;">jenkins-pipeline</a> <a href="/tags/jenkinsfile/" style="font-size: 10px;">jenkinsfile</a> <a href="/tags/jquery/" style="font-size: 11px;">jquery</a> <a href="/tags/json/" style="font-size: 10px;">json</a> <a href="/tags/json4s/" style="font-size: 10px;">json4s</a> <a href="/tags/kafka/" style="font-size: 12px;">kafka</a> <a href="/tags/liftweb/" style="font-size: 11px;">liftweb</a> <a href="/tags/linux/" style="font-size: 15px;">linux</a> <a href="/tags/log/" style="font-size: 10px;">log</a> <a href="/tags/logical-replication/" style="font-size: 10px;">logical replication</a> <a href="/tags/logrotate/" style="font-size: 10px;">logrotate</a> <a href="/tags/mac/" style="font-size: 11px;">mac</a> <a href="/tags/macros/" style="font-size: 10px;">macros</a> <a href="/tags/mass-data/" style="font-size: 10px;">mass-data</a> <a href="/tags/mass-rdi/" style="font-size: 10px;">mass-rdi</a> <a href="/tags/maven/" style="font-size: 11px;">maven</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/mybatis/" style="font-size: 12px;">mybatis</a> <a href="/tags/mybatis-plus/" style="font-size: 11px;">mybatis-plus</a> <a href="/tags/mysql/" style="font-size: 11px;">mysql</a> <a href="/tags/nacos/" style="font-size: 10px;">nacos</a> <a href="/tags/neokylin/" style="font-size: 10px;">neokylin</a> <a href="/tags/network/" style="font-size: 10px;">network</a> <a href="/tags/nginx/" style="font-size: 13px;">nginx</a> <a href="/tags/oauth-2/" style="font-size: 10px;">oauth-2</a> <a href="/tags/oauth2/" style="font-size: 10px;">oauth2</a> <a href="/tags/obs/" style="font-size: 10px;">obs</a> <a href="/tags/opendal/" style="font-size: 10px;">opendal</a> <a href="/tags/option/" style="font-size: 10px;">option</a> <a href="/tags/oracle/" style="font-size: 10px;">oracle</a> <a href="/tags/oss/" style="font-size: 10px;">oss</a> <a href="/tags/outofmemory/" style="font-size: 10px;">outofmemory</a> <a href="/tags/pdf/" style="font-size: 10px;">pdf</a> <a href="/tags/play/" style="font-size: 10px;">play</a> <a href="/tags/playframework/" style="font-size: 12px;">playframework</a> <a href="/tags/postgresql/" style="font-size: 17px;">postgresql</a> <a href="/tags/process/" style="font-size: 10px;">process</a> <a href="/tags/promise/" style="font-size: 10px;">promise</a> <a href="/tags/proto-2/" style="font-size: 10px;">proto 2</a> <a href="/tags/proto-3/" style="font-size: 10px;">proto 3</a> <a href="/tags/protobuf/" style="font-size: 11px;">protobuf</a> <a href="/tags/proxy/" style="font-size: 10px;">proxy</a> <a href="/tags/pulsar/" style="font-size: 11px;">pulsar</a> <a href="/tags/python/" style="font-size: 11px;">python</a> <a href="/tags/qt/" style="font-size: 10px;">qt</a> <a href="/tags/r2dbc/" style="font-size: 10px;">r2dbc</a> <a href="/tags/reactive/" style="font-size: 12px;">reactive</a> <a href="/tags/reactivemongo/" style="font-size: 10px;">reactivemongo</a> <a href="/tags/reactivestream/" style="font-size: 10px;">reactivestream</a> <a href="/tags/reactor/" style="font-size: 10px;">reactor</a> <a href="/tags/realtime-etl/" style="font-size: 10px;">realtime-etl</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/replication/" style="font-size: 10px;">replication</a> <a href="/tags/rest/" style="font-size: 11px;">rest</a> <a href="/tags/route/" style="font-size: 10px;">route</a> <a href="/tags/rust/" style="font-size: 13px;">rust</a> <a href="/tags/rust-grpc-grpc-web-tonic-nextjs/" style="font-size: 10px;">rust, grpc, grpc-web, tonic, nextjs</a> <a href="/tags/sbt/" style="font-size: 13px;">sbt</a> <a href="/tags/scala/" style="font-size: 20px;">scala</a> <a href="/tags/scala-akka-actor/" style="font-size: 10px;">scala, akka, actor</a> <a href="/tags/scala-logging/" style="font-size: 10px;">scala-logging</a> <a href="/tags/scala-script/" style="font-size: 10px;">scala-script</a> <a href="/tags/scala-web/" style="font-size: 10px;">scala-web</a> <a href="/tags/scalatest/" style="font-size: 11px;">scalatest</a> <a href="/tags/scala%E5%AE%9E%E6%88%98/" style="font-size: 11px;">scala实战</a> <a href="/tags/scheduler/" style="font-size: 11px;">scheduler</a> <a href="/tags/script/" style="font-size: 10px;">script</a> <a href="/tags/sea-query/" style="font-size: 10px;">sea-query</a> <a href="/tags/shell/" style="font-size: 10px;">shell</a> <a href="/tags/slf4j/" style="font-size: 10px;">slf4j</a> <a href="/tags/slick/" style="font-size: 10px;">slick</a> <a href="/tags/slick-pg/" style="font-size: 10px;">slick-pg</a> <a href="/tags/spark/" style="font-size: 14px;">spark</a> <a href="/tags/spark-sql/" style="font-size: 10px;">spark sql</a> <a href="/tags/sphinx-doc/" style="font-size: 10px;">sphinx-doc</a> <a href="/tags/spring/" style="font-size: 16px;">spring</a> <a href="/tags/spring-boot/" style="font-size: 12px;">spring-boot</a> <a href="/tags/spring-cloud/" style="font-size: 10px;">spring-cloud</a> <a href="/tags/spring-log/" style="font-size: 10px;">spring-log</a> <a href="/tags/sqlx/" style="font-size: 10px;">sqlx</a> <a href="/tags/ssl/" style="font-size: 10px;">ssl</a> <a href="/tags/ssl-config/" style="font-size: 10px;">ssl-config</a> <a href="/tags/system-manager/" style="font-size: 10px;">system-manager</a> <a href="/tags/tengine/" style="font-size: 11px;">tengine</a> <a href="/tags/test/" style="font-size: 10px;">test</a> <a href="/tags/tokio/" style="font-size: 10px;">tokio</a> <a href="/tags/toml/" style="font-size: 10px;">toml</a> <a href="/tags/top-k/" style="font-size: 10px;">top-k</a> <a href="/tags/try/" style="font-size: 10px;">try</a> <a href="/tags/unix/" style="font-size: 10px;">unix</a> <a href="/tags/upgrading/" style="font-size: 10px;">upgrading</a> <a href="/tags/upstream/" style="font-size: 10px;">upstream</a> <a href="/tags/user-system/" style="font-size: 10px;">user-system</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/vm-overcommit-memory/" style="font-size: 10px;">vm.overcommit_memory</a> <a href="/tags/vue/" style="font-size: 10px;">vue</a> <a href="/tags/wal/" style="font-size: 10px;">wal</a> <a href="/tags/webflux/" style="font-size: 11px;">webflux</a> <a href="/tags/%E4%B8%AD%E6%96%87%E5%AD%97%E7%AC%A6%E9%9B%86/" style="font-size: 10px;">中文字符集</a> <a href="/tags/%E4%BA%92%E6%93%8D%E4%BD%9C/" style="font-size: 10px;">互操作</a> <a href="/tags/%E5%85%A5%E9%97%A8/" style="font-size: 10px;">入门</a> <a href="/tags/%E5%8D%8E%E4%B8%BA%E4%BA%91/" style="font-size: 10px;">华为云</a> <a href="/tags/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/" style="font-size: 10px;">反向代理</a> <a href="/tags/%E5%B7%A5%E4%BD%9C/" style="font-size: 11px;">工作</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E5%BE%AE%E4%BF%A1%E5%BC%80%E5%8F%91/" style="font-size: 11px;">微信开发</a> <a href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" style="font-size: 14px;">微服务</a> <a href="/tags/%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84/" style="font-size: 10px;">技术架构</a> <a href="/tags/%E6%8A%80%E6%9C%AF%E9%80%89%E5%9E%8B/" style="font-size: 10px;">技术选型</a> <a href="/tags/%E6%96%AD%E7%82%B9%E4%B8%8A%E4%BC%A0/" style="font-size: 10px;">断点上传</a> <a href="/tags/%E6%96%AD%E7%82%B9%E4%B8%8B%E8%BD%BD/" style="font-size: 10px;">断点下载</a> <a href="/tags/%E6%B4%BB%E5%8A%A8%E6%8A%A5%E5%90%8D/" style="font-size: 10px;">活动报名</a> <a href="/tags/%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F/" style="font-size: 10px;">环境变量</a> <a href="/tags/%E7%94%9F%E6%B4%BB/" style="font-size: 10px;">生活</a> <a href="/tags/%E7%AD%96%E6%9C%8D%E5%8A%A1/" style="font-size: 10px;">策服务</a> <a href="/tags/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/" style="font-size: 10px;">负载均衡</a> <a href="/tags/%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84/" style="font-size: 10px;">软件架构</a> <a href="/tags/%E9%80%BB%E8%BE%91%E5%A4%8D%E5%88%B6/" style="font-size: 10px;">逻辑复制</a> <a href="/tags/%E9%85%8D%E7%BD%AE/" style="font-size: 10px;">配置</a> <a href="/tags/%E9%98%BF%E9%87%8C%E4%BA%91/" style="font-size: 10px;">阿里云</a> <a href="/tags/%E9%9B%86%E7%BE%A4/" style="font-size: 13px;">集群</a>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a target="_blank" rel="noopener" href="http://hexo.io">Hexo</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+            
+        
+    </div>
+</aside>
+
+                </div>
+            </div>
+        </div>
+        <footer id="footer">
+    <div class="container">
+        <div class="container-inner">
+            <a id="back-to-top" href="javascript:;"><i class="icon fa fa-angle-up"></i></a>
+            <div class="credit">
+                <h1 class="logo-wrap">
+                    <a href="/" class="logo"></a>
+                </h1>
+                <p>&copy; 2024 杨景</p>
+                
+                <p>Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="https://github.com/ppoffice" target="_blank">PPOffice</a></p>
+                
+            </div>
+            <div class="footer-plugins">
+              
+    
+
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+    </div>
+    
+
+
+    
+        
+<script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-share.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-video.min.js"></script>
+
+    
+    
+        
+<script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+    
+    
+
+    
+    
+    
+
+
+
+<!-- Custom Scripts -->
+
+<script src="/js/main.js"></script>
+
+
+</body>
+</html>

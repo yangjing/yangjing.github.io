@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+
+    
+
+    
+    <title>Scala开发者的Spring-Boot快速上手指南 01 | 杨景的个人站点</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="keywords" content="java,scala,maven,sbt,spring-boot,spring" />
+    
+    <meta name="description" content="做为一个Scala爱好者，是很想基于 Lightbend 的一套架构进行软件开发的。Play，Akka，Scala，Spark……。不过理想很丰满，现实却很骨感。鉴于那批原教旨主义者，他们对 Spring 已经疯狂迷恋，我等讲道理、讲实际的人也只好将 Scala 与 Spring Boot 进行整合。这两兄弟是和睦的，是友好的，并不是有你无他，完全可以在能力和现实中实现一个美好的平衡。 （文章查考">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Scala开发者的Spring-Boot快速上手指南 01">
+<meta property="og:url" content="https://yangjing.github.io/2016/03/03/scala%E5%BC%80%E5%8F%91%E8%80%85%E7%9A%84spring-boot%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E6%8C%87%E5%8D%97_01/index.html">
+<meta property="og:site_name" content="杨景的个人站点">
+<meta property="og:description" content="做为一个Scala爱好者，是很想基于 Lightbend 的一套架构进行软件开发的。Play，Akka，Scala，Spark……。不过理想很丰满，现实却很骨感。鉴于那批原教旨主义者，他们对 Spring 已经疯狂迷恋，我等讲道理、讲实际的人也只好将 Scala 与 Spring Boot 进行整合。这两兄弟是和睦的，是友好的，并不是有你无他，完全可以在能力和现实中实现一个美好的平衡。 （文章查考">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2016-03-03T13:02:53.000Z">
+<meta property="article:modified_time" content="2024-11-27T03:06:27.090Z">
+<meta property="article:author" content="杨景">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="scala">
+<meta property="article:tag" content="maven">
+<meta property="article:tag" content="sbt">
+<meta property="article:tag" content="spring-boot">
+<meta property="article:tag" content="spring">
+<meta name="twitter:card" content="summary">
+    
+
+    
+
+    
+
+    
+<link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/libs/titillium-web/styles.css">
+
+    
+<link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+<script src="/libs/jquery/3.5.0/jquery.min.js"></script>
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+
+    
+    
+    
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <div id="wrap">
+        <header id="header">
+    <div id="header-outer" class="outer">
+        <div class="container">
+            <div class="container-inner">
+                <div id="header-title">
+                    <h1 class="logo-wrap">
+                        <a href="/" class="logo"></a>
+                    </h1>
+                    
+                </div>
+                <div id="header-inner" class="nav-container">
+                    <a id="main-nav-toggle" class="nav-icon fa fa-bars"></a>
+                    <div class="nav-container-inner">
+                        <ul id="main-nav">
+                            
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/">主页</a>
+                                </li>
+                            
+                                    <ul class="main-nav-list"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/bigdata/">bigdata</a><ul class="main-nav-list-child"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/bigdata/ambari-hdp/">ambari/hdp</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/bigdata/cassandra/">cassandra</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/bigdata/elasticsearch/">elasticsearch</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/bigdata/flink/">flink</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/bigdata/greenplum/">greenplum</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/bigdata/postgresql/">postgresql</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/bigdata/pulsar/">pulsar</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/bigdata/spark/">spark</a></li></ul></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/c-c/">c/c++</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/data/">data</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/essay/">essay</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/java/">java</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/rust/">rust</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/scala/">scala</a><ul class="main-nav-list-child"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/scala/akka/">akka</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/scala/learning-scala/">learning scala</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/scala/scala%E5%AE%9E%E6%88%98/">scala实战</a></li></ul></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/unix-linux/">unix/linux</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/work/">work</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E4%BD%9C%E5%93%81/">作品</a><ul class="main-nav-list-child"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E4%BD%9C%E5%93%81/akka-cookbook/">akka-cookbook</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E4%BD%9C%E5%93%81/akka-http-chinese/">akka-http-chinese</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E4%BD%9C%E5%93%81/lecture/">lecture</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E4%BD%9C%E5%93%81/nacos-sdk-scala/">nacos-sdk-scala</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E4%BD%9C%E5%93%81/scala-web-development/">scala-web-development</a></li></ul></li></ul>
+                                
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/2016/07/26/about/">关于</a>
+                                </li>
+                            
+                        </ul>
+                        <nav id="sub-nav">
+                            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+</div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+        <div class="container">
+            <div class="main-body container-inner">
+                <div class="main-body-inner">
+                    <section id="main">
+                        <div class="main-body-header">
+    <h1 class="header">
+    
+    <a class="page-title-link" href="/categories/scala/">scala</a>
+    </h1>
+</div>
+
+                        <div class="main-body-content">
+                            <article id="post-scala开发者的spring-boot快速上手指南_01" class="article article-single article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+        Scala开发者的Spring-Boot快速上手指南 01
+        </h1>
+    
+
+            </header>
+        
+        
+            <div class="article-meta">
+                
+  <div class="article-date">
+    <i class="fa fa-calendar"></i>
+    <a href="/2016/03/03/scala%E5%BC%80%E5%8F%91%E8%80%85%E7%9A%84spring-boot%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E6%8C%87%E5%8D%97_01/" class="article-date">
+       <time datetime="2016-03-03T13:02:53.000Z" itemprop="datePublished">2016-03-03</time>
+    </a>
+  </div>
+
+
+<div class="article-date">
+  <i class="fa fa-calendar-plus-o"></i>
+  <a href="/2016/03/03/scala%E5%BC%80%E5%8F%91%E8%80%85%E7%9A%84spring-boot%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E6%8C%87%E5%8D%97_01/" class="article-date">
+     <time datetime="2024-11-27T03:06:27.090Z" itemprop="dateModified">2024-11-27</time>
+  </a>
+</div>
+
+
+                
+
+                
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link-link" href="/tags/java/" rel="tag">java</a>, <a class="tag-link-link" href="/tags/maven/" rel="tag">maven</a>, <a class="tag-link-link" href="/tags/sbt/" rel="tag">sbt</a>, <a class="tag-link-link" href="/tags/scala/" rel="tag">scala</a>, <a class="tag-link-link" href="/tags/spring/" rel="tag">spring</a>, <a class="tag-link-link" href="/tags/spring-boot/" rel="tag">spring-boot</a>
+    </div>
+
+                
+
+                
+
+            </div>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+            
+
+            
+
+            
+
+            <p>做为一个Scala爱好者，是很想基于 <a target="_blank" rel="noopener" href="http://www.lightbend.com/">Lightbend</a> 的一套架构进行软件开发的。<a target="_blank" rel="noopener" href="https://playframework.com/">Play</a>，<a target="_blank" rel="noopener" href="http://akka.io/">Akka</a>，<a target="_blank" rel="noopener" href="http://scala-lang.org/">Scala</a>，<a target="_blank" rel="noopener" href="http://spark.apache.org/">Spark</a>……。不过理想很丰满，现实却很骨感。鉴于那批原教旨主义者，他们对 <a target="_blank" rel="noopener" href="http://spring.io/">Spring</a> 已经疯狂迷恋，我等讲道理、讲实际的人也只好将 Scala 与 Spring Boot 进行整合。这两兄弟是和睦的，是友好的，并不是有你无他，完全可以在能力和现实中实现一个美好的平衡。</p>
+<p>（文章查考了：<a target="_blank" rel="noopener" href="http://afoo.me/posts/2015-07-21-scala-developers-springboot-guide.html">Scala开发者的SpringBoot快速入门指南
+</a>，谢谢王福强老师的分享。）</p>
+<p>（本文示例在：<a target="_blank" rel="noopener" href="https://github.com/yangjing/spring-boot-scala/tree/v01">https://github.com/yangjing/spring-boot-scala/tree/v01</a>）</p>
+<p><strong>创建支持Scala的Spring Boot应用</strong></p>
+<p>Java社区一般使用 <a target="_blank" rel="noopener" href="http://maven.apache.org/">Maven</a>或<a target="_blank" rel="noopener" href="http://gradle.org/">Gradle</a> 管理项目构建，鉴于 Maven 的使用更多，本文将只讲解 Maven 下的配置，Gradle 的配置请读者自行参考网上实现。当然，作为一个 Scalar ，基于 <a target="_blank" rel="noopener" href="http://www.scala-sbt.org/">Sbt</a> 的配置是肯定会讲到的，在 Sbt 下还有一个神器：<a target="_blank" rel="noopener" href="http://www.scala-sbt.org/sbt-native-packager/">sbt-package-native</a> ，敬待下文详解。</p>
+<h2 id="Maven项目"><a href="#Maven项目" class="headerlink" title="Maven项目"></a>Maven项目</h2><p>首先来看看配置文件 pom.xml</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0&quot;</span> <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>me.yangjing.springscala<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>springscala<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>0.0.1-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">packaging</span>&gt;</span>jar<span class="tag">&lt;/<span class="name">packaging</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>springscala<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">description</span>&gt;</span>Demo project for Spring Boot<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">parent</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-parent<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.3.1.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">relativePath</span>/&gt;</span> <span class="comment">&lt;!-- lookup parent from repository --&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">parent</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">project.build.sourceEncoding</span>&gt;</span>UTF-8<span class="tag">&lt;/<span class="name">project.build.sourceEncoding</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">java.version</span>&gt;</span>1.8<span class="tag">&lt;/<span class="name">java.version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">scala.version</span>&gt;</span>2.11.7<span class="tag">&lt;/<span class="name">scala.version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-test<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.scala-lang<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>scala-library<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;scala.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.scala-lang<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>scala-compiler<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;scala.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-maven-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>net.alchim31.maven<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>scala-maven-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.2.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">executions</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">execution</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">id</span>&gt;</span>compile-scala<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">phase</span>&gt;</span>compile<span class="tag">&lt;/<span class="name">phase</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">goals</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">goal</span>&gt;</span>add-source<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">goal</span>&gt;</span>compile<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">execution</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">id</span>&gt;</span>test-compile-scala<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">phase</span>&gt;</span>test-compile<span class="tag">&lt;/<span class="name">phase</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">goals</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">goal</span>&gt;</span>add-source<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">goal</span>&gt;</span>testCompile<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">executions</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">recompileMode</span>&gt;</span>incremental<span class="tag">&lt;/<span class="name">recompileMode</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">compileOrder</span>&gt;</span>Mixed<span class="tag">&lt;/<span class="name">compileOrder</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">scalaVersion</span>&gt;</span>$&#123;scala.version&#125;<span class="tag">&lt;/<span class="name">scalaVersion</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">args</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">arg</span>&gt;</span>-deprecation<span class="tag">&lt;/<span class="name">arg</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">args</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">jvmArgs</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">jvmArg</span>&gt;</span>-Xms64m<span class="tag">&lt;/<span class="name">jvmArg</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">jvmArg</span>&gt;</span>-Xmx1024m<span class="tag">&lt;/<span class="name">jvmArg</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">jvmArgs</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">project</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>对于 Spring 部分的配置，这里就不多说了。重点说下 Scala 方面的配置。</p>
+<p>首先你需要加入 Scala 的依赖库，这里加入了 <code>scala-library</code> 和 <code>scala-compiler</code> 两个包的依赖，这是在Java环境下编译 Scala 代码所必需的。</p>
+<p>其次就是要添加 <code>scala-maven-plugin</code> 插件，以让 Maven 支持对 Scala 的编译操作。这里需要注意的是 <code>recompileMode</code> 指令，推荐使用 <strong>incremental</strong> 配置。</p>
+<p>另一个需要注意的配置荐就是 <code>compileOrder</code> ，当项目同时使用了Java和Scala两种语言时它决定了两者的编译顺序。默认是 <strong>Mixed</strong> （混合顺序），其它还有两个选项是：<strong>JavaThenScala</strong> 和 <strong>ScalaThanJava</strong>。</p>
+<h2 id="编写Scala代码"><a href="#编写Scala代码" class="headerlink" title="编写Scala代码"></a>编写Scala代码</h2><p>现在我们可以使用 Scala 来编写 spring boot 应用了，先来写一个 POJO 类。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Message</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@BeanProperty</span></span><br><span class="line">  <span class="keyword">var</span> value: <span class="type">String</span> = _</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>再来写一个 Controller ：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@RequestMapping</span>(<span class="type">Array</span>(<span class="string">&quot;/api&quot;</span>))</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ApiController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@RequestMapping</span>(value = <span class="type">Array</span>(<span class="string">&quot;/hello&quot;</span>), method = <span class="type">Array</span>(<span class="type">RequestMethod</span>.<span class="type">GET</span>))</span><br><span class="line">  <span class="meta">@ResponseBody</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">hello</span></span>(): <span class="type">Message</span> = &#123;</span><br><span class="line">    <span class="type">TimeUnit</span>.<span class="type">SECONDS</span>.sleep(<span class="number">6</span>)</span><br><span class="line">    <span class="keyword">val</span> message = <span class="keyword">new</span> <span class="type">Message</span>()</span><br><span class="line">    message.value = <span class="string">&quot;Hello, Scala for Spring!&quot;</span></span><br><span class="line">    message</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里需要注意的是注解参数的传递方式，Scala 里没像 Java 一样会自动把字符串转换成注解里定义的数组参数，我们需要显示的定义一个数据传入。而且传入注解的参数值只能是一个常量，比如：<code>&quot;/api/user&quot;</code> ，不能像这样：<code>Constant.API_PATH + &quot;/user&quot;</code>。</p>
+<h2 id="运行项目"><a href="#运行项目" class="headerlink" title="运行项目"></a>运行项目</h2><p>打开终端，执行以下指令启动 spring boot 应用：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mvn spring-boot:run</span><br></pre></td></tr></table></figure>
+
+<p>再打开一个终端，测试 API 功能：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">time curl -v http://localhost:8080/hello</span><br></pre></td></tr></table></figure>
+
+<h2 id="sbt项目"><a href="#sbt项目" class="headerlink" title="sbt项目"></a>sbt项目</h2><p>这里使用了 <code>.scala</code> 的方式来配置 <strong>sbt</strong> 项目。sbt 的配置文件在项目根目录下的 <code>project</code> 目录：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">project/</span><br><span class="line">├── Build.scala</span><br><span class="line">├── build.properties</span><br></pre></td></tr></table></figure>
+
+<p>在 <code>build.properties</code> 文件内指定了 sbt 的版本号，<code>Build.scala</code> 文件设置了详细的 Sbt 工程设置及编译选项等。我们先来看看配置文件内容：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sbt.<span class="type">Keys</span>._</span><br><span class="line"><span class="keyword">import</span> sbt._</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">Build</span> <span class="keyword">extends</span> <span class="title">Build</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">override</span> <span class="keyword">lazy</span> <span class="keyword">val</span> settings = <span class="keyword">super</span>.settings :+ &#123;</span><br><span class="line">    shellPrompt := (s =&gt; <span class="type">Project</span>.extract(s).currentProject.id + <span class="string">&quot; &gt; &quot;</span>)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">lazy</span> <span class="keyword">val</span> root = <span class="type">Project</span>(<span class="string">&quot;springscala&quot;</span>, file(<span class="string">&quot;.&quot;</span>))</span><br><span class="line">    .settings(</span><br><span class="line">      description := <span class="string">&quot;Spring boot scala&quot;</span>,</span><br><span class="line">      version := <span class="string">&quot;0.0.1&quot;</span>,</span><br><span class="line">      homepage := <span class="type">Some</span>(<span class="keyword">new</span> <span class="type">URL</span>(<span class="string">&quot;https://github.com/yangjing/spring-boot-scala&quot;</span>)),</span><br><span class="line">      organization := <span class="string">&quot;me.yangjing&quot;</span>,</span><br><span class="line">      organizationHomepage := <span class="type">Some</span>(<span class="keyword">new</span> <span class="type">URL</span>(<span class="string">&quot;http://www.yangjing.me&quot;</span>)),</span><br><span class="line">      startYear := <span class="type">Some</span>(<span class="number">2016</span>),</span><br><span class="line">      scalaVersion := <span class="string">&quot;2.11.7&quot;</span>,</span><br><span class="line">      scalacOptions ++= <span class="type">Seq</span>(</span><br><span class="line">        <span class="string">&quot;-encoding&quot;</span>, <span class="string">&quot;utf8&quot;</span>,</span><br><span class="line">        <span class="string">&quot;-unchecked&quot;</span>,</span><br><span class="line">        <span class="string">&quot;-feature&quot;</span>,</span><br><span class="line">        <span class="string">&quot;-deprecation&quot;</span></span><br><span class="line">      ),</span><br><span class="line">      javacOptions ++= <span class="type">Seq</span>(</span><br><span class="line">        <span class="string">&quot;-source&quot;</span>, <span class="string">&quot;1.8&quot;</span>,</span><br><span class="line">        <span class="string">&quot;-target&quot;</span>, <span class="string">&quot;1.8&quot;</span>,</span><br><span class="line">        <span class="string">&quot;-encoding&quot;</span>, <span class="string">&quot;utf8&quot;</span>,</span><br><span class="line">        <span class="string">&quot;-Xlint:unchecked&quot;</span>,</span><br><span class="line">        <span class="string">&quot;-Xlint:deprecation&quot;</span></span><br><span class="line">      ),</span><br><span class="line">      offline := <span class="literal">true</span>,</span><br><span class="line">      libraryDependencies ++= <span class="type">Seq</span>(</span><br><span class="line">        _springBootStarterWeb,</span><br><span class="line">        _springBootStarterTest))</span><br><span class="line"></span><br><span class="line">  <span class="keyword">val</span> verSpringBoot = <span class="string">&quot;1.3.3.RELEASE&quot;</span></span><br><span class="line">  <span class="keyword">val</span> _springBootStarterWeb = <span class="string">&quot;org.springframework.boot&quot;</span> % <span class="string">&quot;spring-boot-starter-web&quot;</span> % verSpringBoot</span><br><span class="line">  <span class="keyword">val</span> _springBootStarterTest = <span class="string">&quot;org.springframework.boot&quot;</span> % <span class="string">&quot;spring-boot-starter-test&quot;</span> % verSpringBoot</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>没错，sbt 的配置文件就是实打实的 Scala 代码。sbt 也有一套像 Gradle 一样的 DSL 来定义项目配置信息，是以后缀 <code>.sbt</code> 结尾的文件。不过个人还是认为直接使用 Scala 代码做配置更直观、清晰。</p>
+<p>具体配置含义，我这里就不细讲了。官方有很详细的教程和文档说明：<a target="_blank" rel="noopener" href="http://www.scala-sbt.org/0.13/docs/zh-cn/index.html">sbt Reference Manual </a>。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Scala 从各方面来看，配置和代码，期简洁性都是优于Java。对于一个Scala爱好者，你的选择很多，比如：<a target="_blank" rel="noopener" href="https://playframework.com/">Play</a>。不过，很多时候你需要考虑到各方面的利益。公司、团队、意愿等各方面。现实中，Spring 在 Java 生态圈还是使用最多的技术，Spring 框架的使用本身是未限制 JVM 平台上的各种主义的，它也可以很好的支持：<a target="_blank" rel="noopener" href="http://www.groovy-lang.org/">Groovy</a>、<a target="_blank" rel="noopener" href="https://kotlinlang.org/">Kotlin</a> 甚至 <a target="_blank" rel="noopener" href="http://clojure.org/">Clojure</a>……</p>
+<p>本文简单讲解了怎样配置 pom.xml 以在 Spring boot 中支持 Scala，以及 sbt 工程又是怎样支持 Spring 的。这即是 Scala 开发者的 Spring boot 入门指南，亦可是 Java 程序员的 Scala 第一次尝试。希望能打开一座桥梁，让 Java 程序员开眼界，Scala 开发者务实。</p>
+<p>下一篇文章我想进一步介绍下使用 Scala 开发 Spring 应用的一些好处和惯用法，接下来的文章还会讲到怎样结合 Akka 基于 Spring 开发一个 WebSocket 应用。</p>
+<p><strong>本系列文章</strong></p>
+<ul>
+<li><a href="/2016/03/03/scala%E5%BC%80%E5%8F%91%E8%80%85%E7%9A%84spring-boot%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E6%8C%87%E5%8D%97_01/">Scala开发者的Spring-Boot快速上手指南 01</a></li>
+<li><a href="/2016/08/25/scala%E5%BC%80%E5%8F%91%E8%80%85%E7%9A%84spring-boot%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E6%8C%87%E5%8D%97-02%EF%BC%9Ascala%E6%83%AF%E7%94%A8%E6%B3%95/">Scala开发者的Spring-Boot快速上手指南 02：Scala惯用法</a></li>
+</ul>
+
+        </div>
+        <footer class="article-footer">
+            
+
+
+
+    <a data-url="https://yangjing.github.io/2016/03/03/scala%E5%BC%80%E5%8F%91%E8%80%85%E7%9A%84spring-boot%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E6%8C%87%E5%8D%97_01/" data-id="cm3zb1i5q003fq5f67wix064w" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+<script>
+    (function ($) {
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+        </footer>
+    </div>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "author": {
+            "@type": "Person",
+            "name": "杨景"
+        },
+        "headline": "Scala开发者的Spring-Boot快速上手指南 01",
+        "image": "https://yangjing.github.io",
+        "keywords": "java scala maven sbt spring-boot spring",
+        "genre": "scala",
+        "datePublished": "2016-03-03",
+        "dateCreated": "2016-03-03",
+        "dateModified": "2024-11-27",
+        "url": "https://yangjing.github.io/2016/03/03/scala开发者的spring-boot快速上手指南_01/",
+        "description": "做为一个Scala爱好者，是很想基于 Lightbend 的一套架构进行软件开发的。Play，Akka，Scala，Spark……。不过理想很丰满，现实却很骨感。鉴于那批原教旨主义者，他们对 Spring 已经疯狂迷恋，我等讲道理、讲实际的人也只好将 Scala 与 Spring Boot 进行整合。这两兄弟是和睦的，是友好的，并不是有你无他，完全可以在能力和现实中实现一个美好的平衡。
+（文章查考",
+        "wordCount": 2348
+    }
+</script>
+
+</article>
+
+    <section id="comments">
+    
+    </section>
+
+
+
+                        </div>
+                    </section>
+                    <aside id="sidebar">
+    <a class="sidebar-toggle" title="Expand Sidebar"><i class="toggle icon"></i></a>
+    <div class="sidebar-top">
+        <p>关注我 :</p>
+        <ul class="social-links">
+            
+                
+                <li>
+                    <a class="social-tooltip" title="github" href="https://github.com/yangjing" target="_blank" rel="noopener">
+                        <i class="icon fa fa-github"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="twitter" href="https://twitter.com/yangbajing1" target="_blank" rel="noopener">
+                        <i class="icon fa fa-twitter"></i>
+                    </a>
+                </li>
+                
+            
+        </ul>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2016/03/07/cassandra%E5%8D%87%E7%BA%A7%E6%9B%B4%E6%96%B0/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">下一篇</strong>
+        <p class="article-nav-title">
+        
+            Cassandra升级更新
+        
+        </p>
+        <i class="icon fa fa-chevron-right" id="icon-chevron-right"></i>
+    </a>
+    
+    
+        <a href="/2016/02/27/%E5%AE%89%E8%A3%85spark1-5%E4%B8%8Ehadoop2-6/" id="article-nav-older" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">上一篇</strong>
+        <p class="article-nav-title">安装Spark1.5.2与Hadoop2.6.2</p>
+        <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
+        </a>
+    
+</nav>
+
+    
+    <div class="widgets-container">
+        
+            
+                
+
+            
+                
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="no-thumbnail">
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/rust/">rust</a></p>
+                            <p class="item-title"><a href="/2024/11/26/Rust%EF%BC%9A%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5/" class="title">Rust：依赖注入</a></p>
+                            <p class="item-date"><time datetime="2024-11-26T03:12:37.000Z" itemprop="datePublished">2024-11-26</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/essay/">essay</a></p>
+                            <p class="item-title"><a href="/2024/10/12/%E9%80%9A%E7%94%A8%E5%88%86%E5%B8%83%E5%BC%8F%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/" class="title">通用分布式任务调度系统设计</a></p>
+                            <p class="item-date"><time datetime="2024-10-12T04:58:55.000Z" itemprop="datePublished">2024-10-12</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"></p>
+                            <p class="item-title"><a href="/2024/09/25/docs-%E6%92%B0%E5%86%99%E3%80%8ARust-gRPC-%E7%BC%96%E8%AF%91%E6%89%8B%E5%86%8C%EF%BC%9Atonic-build%E3%80%8B/" class="title">docs: 撰写《Rust gRPC 编译手册：tonic-build》</a></p>
+                            <p class="item-date"><time datetime="2024-09-25T09:39:09.000Z" itemprop="datePublished">2024-09-25</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/rust/">rust</a></p>
+                            <p class="item-title"><a href="/2024/09/25/Rust-gRPC-%E7%BC%96%E8%AF%91%E6%89%8B%E5%86%8C%EF%BC%9Atonic-build/" class="title">Rust gRPC 编译手册：tonic-build</a></p>
+                            <p class="item-date"><time datetime="2024-09-25T00:02:30.000Z" itemprop="datePublished">2024-09-25</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/rust/">rust</a></p>
+                            <p class="item-title"><a href="/2024/09/24/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA-gRPC-Web%EF%BC%9A%E4%BD%BF%E7%94%A8-tonic-%E5%92%8C-nice-grpc/" class="title">深入浅出 gRPC-Web：使用 tonic 和 nice-grpc</a></p>
+                            <p class="item-date"><time datetime="2024-09-24T05:34:06.000Z" itemprop="datePublished">2024-09-24</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/bigdata/">bigdata</a><span class="category-list-count">24</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/bigdata/ambari-hdp/">ambari/hdp</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/bigdata/cassandra/">cassandra</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/bigdata/elasticsearch/">elasticsearch</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/bigdata/flink/">flink</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/bigdata/greenplum/">greenplum</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/bigdata/postgresql/">postgresql</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/bigdata/pulsar/">pulsar</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/bigdata/spark/">spark</a><span class="category-list-count">4</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/c-c/">c/c++</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/data/">data</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/essay/">essay</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/rust/">rust</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/scala/">scala</a><span class="category-list-count">43</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/scala/akka/">akka</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/scala/learning-scala/">learning scala</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/scala/scala%E5%AE%9E%E6%88%98/">scala实战</a><span class="category-list-count">4</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/unix-linux/">unix/linux</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/work/">work</a><span class="category-list-count">20</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BD%9C%E5%93%81/">作品</a><span class="category-list-count">5</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BD%9C%E5%93%81/akka-cookbook/">akka-cookbook</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BD%9C%E5%93%81/akka-http-chinese/">akka-http-chinese</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BD%9C%E5%93%81/lecture/">lecture</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BD%9C%E5%93%81/nacos-sdk-scala/">nacos-sdk-scala</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BD%9C%E5%93%81/scala-web-development/">scala-web-development</a><span class="category-list-count">1</span></li></ul></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/11/">十一月 2024</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/10/">十月 2024</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/09/">九月 2024</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/08/">八月 2024</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/07/">七月 2024</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/06/">六月 2024</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/04/">四月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">九月 2021</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">十一月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">九月 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">八月 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">六月 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">三月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">十二月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">九月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/05/">五月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/02/">二月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/01/">一月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/02/">二月 2012</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/10/">十月 2011</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/09/">九月 2011</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2010/10/">十月 2010</a><span class="archive-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">标签</h3>
+        <div class="widget">
+            <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/4a/" rel="tag">4a</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DDD/" rel="tag">DDD</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Go/" rel="tag">Go</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Node/" rel="tag">Node</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/" rel="tag">Python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scala/" rel="tag">Scala</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sphinx-%E6%92%B0%E5%86%99-%E7%94%B5%E5%AD%90%E6%96%87%E6%A1%A3/" rel="tag">Sphinx 撰写 电子文档</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/about/" rel="tag">about</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/access-token/" rel="tag">access_token</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/accesstoken/" rel="tag">accesstoken</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/activemq/" rel="tag">activemq</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka/" rel="tag">akka</a><span class="tag-list-count">29</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka-http/" rel="tag">akka http</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka-2-6/" rel="tag">akka-2.6</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka-cluster/" rel="tag">akka-cluster</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka-cluster-sharding/" rel="tag">akka-cluster-sharding</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka-cookbook/" rel="tag">akka-cookbook</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka-grpc/" rel="tag">akka-grpc</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka-http/" rel="tag">akka-http</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka-http-chinese/" rel="tag">akka-http-chinese</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka-http-testkit/" rel="tag">akka-http-testkit</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka-log/" rel="tag">akka-log</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka-persistence/" rel="tag">akka-persistence</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka-stream/" rel="tag">akka-stream</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka-streams/" rel="tag">akka-streams</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka-typed/" rel="tag">akka-typed</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka%E5%AE%9E%E6%88%98/" rel="tag">akka实战</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alpakka/" rel="tag">alpakka</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alpakka-kafka/" rel="tag">alpakka-kafka</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ambari/" rel="tag">ambari</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/api/" rel="tag">api</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/api-design/" rel="tag">api-design</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/at-least-once-delivery/" rel="tag">at-least-once-delivery</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/axum/" rel="tag">axum</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bash/" rel="tag">bash</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/batch-insert/" rel="tag">batch-insert</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/book/" rel="tag">book</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/" rel="tag">c</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/" rel="tag">c++</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cassandra/" rel="tag">cassandra</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdc/" rel="tag">cdc</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/centos/" rel="tag">centos</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/centos7/" rel="tag">centos7</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/clap/" rel="tag">clap</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cluster/" rel="tag">cluster</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cluster-distributedata/" rel="tag">cluster-distributedata</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cluster-sharding/" rel="tag">cluster-sharding</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cluster-singleton/" rel="tag">cluster-singleton</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/collection/" rel="tag">collection</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/config/" rel="tag">config</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/coordinated-shutdown/" rel="tag">coordinated-shutdown</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cqrs/" rel="tag">cqrs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/crawler/" rel="tag">crawler</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/debezium/" rel="tag">debezium</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dependency-injection/" rel="tag">dependency-injection</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/design-pattern/" rel="tag">design-pattern</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/devops/" rel="tag">devops</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/distribution/" rel="tag">distribution</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/eclipse/" rel="tag">eclipse</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/either/" rel="tag">either</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elasticsearch/" rel="tag">elasticsearch</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elt/" rel="tag">elt</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/email/" rel="tag">email</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/enum/" rel="tag">enum</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/etl/" rel="tag">etl</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/event-sourced/" rel="tag">event-sourced</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/exactly-once/" rel="tag">exactly-once</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/firewall/" rel="tag">firewall</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/" rel="tag">flink</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/functional/" rel="tag">functional</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/functions/" rel="tag">functions</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/fusion-log/" rel="tag">fusion-log</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/future/" rel="tag">future</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gatling/" rel="tag">gatling</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gitlab/" rel="tag">gitlab</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gradle/" rel="tag">gradle</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/greenplum/" rel="tag">greenplum</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grpc/" rel="tag">grpc</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grpc-rust-tonic-prost-protobuf/" rel="tag">grpc, rust, tonic, prost, protobuf</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grpc-web-tonic-nice-grpc-rust-nextjs/" rel="tag">grpc-web, tonic, nice-grpc, rust, nextjs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hadoop/" rel="tag">hadoop</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hanlp/" rel="tag">hanlp</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hdp/" rel="tag">hdp</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/" rel="tag">hive</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/html5/" rel="tag">html5</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http-2/" rel="tag">http-2</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/https/" rel="tag">https</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/idea/" rel="tag">idea</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jackson/" rel="tag">jackson</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jackson-module-scala/" rel="tag">jackson-module-scala</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jdbc/" rel="tag">jdbc</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jenkins/" rel="tag">jenkins</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jenkins-pipeline/" rel="tag">jenkins-pipeline</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jenkinsfile/" rel="tag">jenkinsfile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jquery/" rel="tag">jquery</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/json/" rel="tag">json</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/json4s/" rel="tag">json4s</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/" rel="tag">kafka</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/liftweb/" rel="tag">liftweb</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/log/" rel="tag">log</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/logical-replication/" rel="tag">logical replication</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/logrotate/" rel="tag">logrotate</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mac/" rel="tag">mac</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/macros/" rel="tag">macros</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mass-data/" rel="tag">mass-data</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mass-rdi/" rel="tag">mass-rdi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/" rel="tag">maven</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mybatis/" rel="tag">mybatis</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mybatis-plus/" rel="tag">mybatis-plus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nacos/" rel="tag">nacos</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neokylin/" rel="tag">neokylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/network/" rel="tag">network</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oauth-2/" rel="tag">oauth-2</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oauth2/" rel="tag">oauth2</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/obs/" rel="tag">obs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/opendal/" rel="tag">opendal</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/option/" rel="tag">option</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oracle/" rel="tag">oracle</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/" rel="tag">oss</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/outofmemory/" rel="tag">outofmemory</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pdf/" rel="tag">pdf</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/play/" rel="tag">play</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/playframework/" rel="tag">playframework</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/postgresql/" rel="tag">postgresql</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/process/" rel="tag">process</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/promise/" rel="tag">promise</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/proto-2/" rel="tag">proto 2</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/proto-3/" rel="tag">proto 3</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/protobuf/" rel="tag">protobuf</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/proxy/" rel="tag">proxy</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pulsar/" rel="tag">pulsar</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/qt/" rel="tag">qt</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/r2dbc/" rel="tag">r2dbc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/reactive/" rel="tag">reactive</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/reactivemongo/" rel="tag">reactivemongo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/reactivestream/" rel="tag">reactivestream</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/reactor/" rel="tag">reactor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/realtime-etl/" rel="tag">realtime-etl</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/replication/" rel="tag">replication</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/rest/" rel="tag">rest</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/route/" rel="tag">route</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/rust/" rel="tag">rust</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/rust-grpc-grpc-web-tonic-nextjs/" rel="tag">rust, grpc, grpc-web, tonic, nextjs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/" rel="tag">sbt</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scala/" rel="tag">scala</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scala-akka-actor/" rel="tag">scala, akka, actor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scala-logging/" rel="tag">scala-logging</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scala-script/" rel="tag">scala-script</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scala-web/" rel="tag">scala-web</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scalatest/" rel="tag">scalatest</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scala%E5%AE%9E%E6%88%98/" rel="tag">scala实战</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scheduler/" rel="tag">scheduler</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/script/" rel="tag">script</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sea-query/" rel="tag">sea-query</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/slf4j/" rel="tag">slf4j</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/slick/" rel="tag">slick</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/slick-pg/" rel="tag">slick-pg</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark-sql/" rel="tag">spark sql</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sphinx-doc/" rel="tag">sphinx-doc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring/" rel="tag">spring</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-boot/" rel="tag">spring-boot</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-cloud/" rel="tag">spring-cloud</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-log/" rel="tag">spring-log</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlx/" rel="tag">sqlx</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssl/" rel="tag">ssl</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssl-config/" rel="tag">ssl-config</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/system-manager/" rel="tag">system-manager</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tengine/" rel="tag">tengine</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/test/" rel="tag">test</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tokio/" rel="tag">tokio</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/toml/" rel="tag">toml</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/top-k/" rel="tag">top-k</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/try/" rel="tag">try</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unix/" rel="tag">unix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/upgrading/" rel="tag">upgrading</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/upstream/" rel="tag">upstream</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/user-system/" rel="tag">user-system</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/" rel="tag">vim</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vm-overcommit-memory/" rel="tag">vm.overcommit_memory</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vue/" rel="tag">vue</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/wal/" rel="tag">wal</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/webflux/" rel="tag">webflux</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AD%E6%96%87%E5%AD%97%E7%AC%A6%E9%9B%86/" rel="tag">中文字符集</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%92%E6%93%8D%E4%BD%9C/" rel="tag">互操作</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%85%A5%E9%97%A8/" rel="tag">入门</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%8E%E4%B8%BA%E4%BA%91/" rel="tag">华为云</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/" rel="tag">反向代理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E4%BD%9C/" rel="tag">工作</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BE%AE%E4%BF%A1%E5%BC%80%E5%8F%91/" rel="tag">微信开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" rel="tag">微服务</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84/" rel="tag">技术架构</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8A%80%E6%9C%AF%E9%80%89%E5%9E%8B/" rel="tag">技术选型</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%96%AD%E7%82%B9%E4%B8%8A%E4%BC%A0/" rel="tag">断点上传</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%96%AD%E7%82%B9%E4%B8%8B%E8%BD%BD/" rel="tag">断点下载</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B4%BB%E5%8A%A8%E6%8A%A5%E5%90%8D/" rel="tag">活动报名</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F/" rel="tag">环境变量</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AD%96%E6%9C%8D%E5%8A%A1/" rel="tag">策服务</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/" rel="tag">负载均衡</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84/" rel="tag">软件架构</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%BB%E8%BE%91%E5%A4%8D%E5%88%B6/" rel="tag">逻辑复制</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%85%8D%E7%BD%AE/" rel="tag">配置</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%BF%E9%87%8C%E4%BA%91/" rel="tag">阿里云</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9B%86%E7%BE%A4/" rel="tag">集群</a><span class="tag-list-count">4</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-float">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/4a/" style="font-size: 10px;">4a</a> <a href="/tags/DDD/" style="font-size: 10px;">DDD</a> <a href="/tags/Go/" style="font-size: 10px;">Go</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Node/" style="font-size: 10px;">Node</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Scala/" style="font-size: 10px;">Scala</a> <a href="/tags/Sphinx-%E6%92%B0%E5%86%99-%E7%94%B5%E5%AD%90%E6%96%87%E6%A1%A3/" style="font-size: 10px;">Sphinx 撰写 电子文档</a> <a href="/tags/about/" style="font-size: 10px;">about</a> <a href="/tags/access-token/" style="font-size: 10px;">access_token</a> <a href="/tags/accesstoken/" style="font-size: 10px;">accesstoken</a> <a href="/tags/activemq/" style="font-size: 10px;">activemq</a> <a href="/tags/akka/" style="font-size: 19px;">akka</a> <a href="/tags/akka-http/" style="font-size: 11px;">akka http</a> <a href="/tags/akka-2-6/" style="font-size: 10px;">akka-2.6</a> <a href="/tags/akka-cluster/" style="font-size: 13px;">akka-cluster</a> <a href="/tags/akka-cluster-sharding/" style="font-size: 10px;">akka-cluster-sharding</a> <a href="/tags/akka-cookbook/" style="font-size: 10px;">akka-cookbook</a> <a href="/tags/akka-grpc/" style="font-size: 14px;">akka-grpc</a> <a href="/tags/akka-http/" style="font-size: 16px;">akka-http</a> <a href="/tags/akka-http-chinese/" style="font-size: 10px;">akka-http-chinese</a> <a href="/tags/akka-http-testkit/" style="font-size: 10px;">akka-http-testkit</a> <a href="/tags/akka-log/" style="font-size: 10px;">akka-log</a> <a href="/tags/akka-persistence/" style="font-size: 14px;">akka-persistence</a> <a href="/tags/akka-stream/" style="font-size: 12px;">akka-stream</a> <a href="/tags/akka-streams/" style="font-size: 11px;">akka-streams</a> <a href="/tags/akka-typed/" style="font-size: 12px;">akka-typed</a> <a href="/tags/akka%E5%AE%9E%E6%88%98/" style="font-size: 10px;">akka实战</a> <a href="/tags/alpakka/" style="font-size: 10px;">alpakka</a> <a href="/tags/alpakka-kafka/" style="font-size: 10px;">alpakka-kafka</a> <a href="/tags/ambari/" style="font-size: 11px;">ambari</a> <a href="/tags/api/" style="font-size: 11px;">api</a> <a href="/tags/api-design/" style="font-size: 10px;">api-design</a> <a href="/tags/at-least-once-delivery/" style="font-size: 10px;">at-least-once-delivery</a> <a href="/tags/axum/" style="font-size: 10px;">axum</a> <a href="/tags/bash/" style="font-size: 10px;">bash</a> <a href="/tags/batch-insert/" style="font-size: 10px;">batch-insert</a> <a href="/tags/book/" style="font-size: 11px;">book</a> <a href="/tags/c/" style="font-size: 12px;">c</a> <a href="/tags/c/" style="font-size: 11px;">c++</a> <a href="/tags/cassandra/" style="font-size: 14px;">cassandra</a> <a href="/tags/cdc/" style="font-size: 12px;">cdc</a> <a href="/tags/centos/" style="font-size: 10px;">centos</a> <a href="/tags/centos7/" style="font-size: 11px;">centos7</a> <a href="/tags/clap/" style="font-size: 10px;">clap</a> <a href="/tags/cluster/" style="font-size: 12px;">cluster</a> <a href="/tags/cluster-distributedata/" style="font-size: 10px;">cluster-distributedata</a> <a href="/tags/cluster-sharding/" style="font-size: 10px;">cluster-sharding</a> <a href="/tags/cluster-singleton/" style="font-size: 10px;">cluster-singleton</a> <a href="/tags/collection/" style="font-size: 10px;">collection</a> <a href="/tags/config/" style="font-size: 11px;">config</a> <a href="/tags/coordinated-shutdown/" style="font-size: 10px;">coordinated-shutdown</a> <a href="/tags/cqrs/" style="font-size: 10px;">cqrs</a> <a href="/tags/crawler/" style="font-size: 10px;">crawler</a> <a href="/tags/debezium/" style="font-size: 10px;">debezium</a> <a href="/tags/dependency-injection/" style="font-size: 10px;">dependency-injection</a> <a href="/tags/design-pattern/" style="font-size: 10px;">design-pattern</a> <a href="/tags/devops/" style="font-size: 11px;">devops</a> <a href="/tags/distribution/" style="font-size: 10px;">distribution</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/eclipse/" style="font-size: 10px;">eclipse</a> <a href="/tags/either/" style="font-size: 10px;">either</a> <a href="/tags/elasticsearch/" style="font-size: 12px;">elasticsearch</a> <a href="/tags/elt/" style="font-size: 10px;">elt</a> <a href="/tags/email/" style="font-size: 10px;">email</a> <a href="/tags/enum/" style="font-size: 12px;">enum</a> <a href="/tags/etl/" style="font-size: 11px;">etl</a> <a href="/tags/event-sourced/" style="font-size: 10px;">event-sourced</a> <a href="/tags/exactly-once/" style="font-size: 10px;">exactly-once</a> <a href="/tags/firewall/" style="font-size: 10px;">firewall</a> <a href="/tags/flink/" style="font-size: 11px;">flink</a> <a href="/tags/functional/" style="font-size: 10px;">functional</a> <a href="/tags/functions/" style="font-size: 10px;">functions</a> <a href="/tags/fusion-log/" style="font-size: 10px;">fusion-log</a> <a href="/tags/future/" style="font-size: 10px;">future</a> <a href="/tags/gatling/" style="font-size: 10px;">gatling</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/gitlab/" style="font-size: 10px;">gitlab</a> <a href="/tags/gradle/" style="font-size: 10px;">gradle</a> <a href="/tags/greenplum/" style="font-size: 10px;">greenplum</a> <a href="/tags/grpc/" style="font-size: 14px;">grpc</a> <a href="/tags/grpc-rust-tonic-prost-protobuf/" style="font-size: 10px;">grpc, rust, tonic, prost, protobuf</a> <a href="/tags/grpc-web-tonic-nice-grpc-rust-nextjs/" style="font-size: 10px;">grpc-web, tonic, nice-grpc, rust, nextjs</a> <a href="/tags/hadoop/" style="font-size: 11px;">hadoop</a> <a href="/tags/hanlp/" style="font-size: 10px;">hanlp</a> <a href="/tags/hdp/" style="font-size: 11px;">hdp</a> <a href="/tags/hive/" style="font-size: 10px;">hive</a> <a href="/tags/html5/" style="font-size: 10px;">html5</a> <a href="/tags/http-2/" style="font-size: 10px;">http-2</a> <a href="/tags/https/" style="font-size: 10px;">https</a> <a href="/tags/idea/" style="font-size: 10px;">idea</a> <a href="/tags/jackson/" style="font-size: 13px;">jackson</a> <a href="/tags/jackson-module-scala/" style="font-size: 10px;">jackson-module-scala</a> <a href="/tags/java/" style="font-size: 18px;">java</a> <a href="/tags/jdbc/" style="font-size: 11px;">jdbc</a> <a href="/tags/jenkins/" style="font-size: 11px;">jenkins</a> <a href="/tags/jenkins-pipeline/" style="font-size: 10px;">jenkins-pipeline</a> <a href="/tags/jenkinsfile/" style="font-size: 10px;">jenkinsfile</a> <a href="/tags/jquery/" style="font-size: 11px;">jquery</a> <a href="/tags/json/" style="font-size: 10px;">json</a> <a href="/tags/json4s/" style="font-size: 10px;">json4s</a> <a href="/tags/kafka/" style="font-size: 12px;">kafka</a> <a href="/tags/liftweb/" style="font-size: 11px;">liftweb</a> <a href="/tags/linux/" style="font-size: 15px;">linux</a> <a href="/tags/log/" style="font-size: 10px;">log</a> <a href="/tags/logical-replication/" style="font-size: 10px;">logical replication</a> <a href="/tags/logrotate/" style="font-size: 10px;">logrotate</a> <a href="/tags/mac/" style="font-size: 11px;">mac</a> <a href="/tags/macros/" style="font-size: 10px;">macros</a> <a href="/tags/mass-data/" style="font-size: 10px;">mass-data</a> <a href="/tags/mass-rdi/" style="font-size: 10px;">mass-rdi</a> <a href="/tags/maven/" style="font-size: 11px;">maven</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/mybatis/" style="font-size: 12px;">mybatis</a> <a href="/tags/mybatis-plus/" style="font-size: 11px;">mybatis-plus</a> <a href="/tags/mysql/" style="font-size: 11px;">mysql</a> <a href="/tags/nacos/" style="font-size: 10px;">nacos</a> <a href="/tags/neokylin/" style="font-size: 10px;">neokylin</a> <a href="/tags/network/" style="font-size: 10px;">network</a> <a href="/tags/nginx/" style="font-size: 13px;">nginx</a> <a href="/tags/oauth-2/" style="font-size: 10px;">oauth-2</a> <a href="/tags/oauth2/" style="font-size: 10px;">oauth2</a> <a href="/tags/obs/" style="font-size: 10px;">obs</a> <a href="/tags/opendal/" style="font-size: 10px;">opendal</a> <a href="/tags/option/" style="font-size: 10px;">option</a> <a href="/tags/oracle/" style="font-size: 10px;">oracle</a> <a href="/tags/oss/" style="font-size: 10px;">oss</a> <a href="/tags/outofmemory/" style="font-size: 10px;">outofmemory</a> <a href="/tags/pdf/" style="font-size: 10px;">pdf</a> <a href="/tags/play/" style="font-size: 10px;">play</a> <a href="/tags/playframework/" style="font-size: 12px;">playframework</a> <a href="/tags/postgresql/" style="font-size: 17px;">postgresql</a> <a href="/tags/process/" style="font-size: 10px;">process</a> <a href="/tags/promise/" style="font-size: 10px;">promise</a> <a href="/tags/proto-2/" style="font-size: 10px;">proto 2</a> <a href="/tags/proto-3/" style="font-size: 10px;">proto 3</a> <a href="/tags/protobuf/" style="font-size: 11px;">protobuf</a> <a href="/tags/proxy/" style="font-size: 10px;">proxy</a> <a href="/tags/pulsar/" style="font-size: 11px;">pulsar</a> <a href="/tags/python/" style="font-size: 11px;">python</a> <a href="/tags/qt/" style="font-size: 10px;">qt</a> <a href="/tags/r2dbc/" style="font-size: 10px;">r2dbc</a> <a href="/tags/reactive/" style="font-size: 12px;">reactive</a> <a href="/tags/reactivemongo/" style="font-size: 10px;">reactivemongo</a> <a href="/tags/reactivestream/" style="font-size: 10px;">reactivestream</a> <a href="/tags/reactor/" style="font-size: 10px;">reactor</a> <a href="/tags/realtime-etl/" style="font-size: 10px;">realtime-etl</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/replication/" style="font-size: 10px;">replication</a> <a href="/tags/rest/" style="font-size: 11px;">rest</a> <a href="/tags/route/" style="font-size: 10px;">route</a> <a href="/tags/rust/" style="font-size: 13px;">rust</a> <a href="/tags/rust-grpc-grpc-web-tonic-nextjs/" style="font-size: 10px;">rust, grpc, grpc-web, tonic, nextjs</a> <a href="/tags/sbt/" style="font-size: 13px;">sbt</a> <a href="/tags/scala/" style="font-size: 20px;">scala</a> <a href="/tags/scala-akka-actor/" style="font-size: 10px;">scala, akka, actor</a> <a href="/tags/scala-logging/" style="font-size: 10px;">scala-logging</a> <a href="/tags/scala-script/" style="font-size: 10px;">scala-script</a> <a href="/tags/scala-web/" style="font-size: 10px;">scala-web</a> <a href="/tags/scalatest/" style="font-size: 11px;">scalatest</a> <a href="/tags/scala%E5%AE%9E%E6%88%98/" style="font-size: 11px;">scala实战</a> <a href="/tags/scheduler/" style="font-size: 11px;">scheduler</a> <a href="/tags/script/" style="font-size: 10px;">script</a> <a href="/tags/sea-query/" style="font-size: 10px;">sea-query</a> <a href="/tags/shell/" style="font-size: 10px;">shell</a> <a href="/tags/slf4j/" style="font-size: 10px;">slf4j</a> <a href="/tags/slick/" style="font-size: 10px;">slick</a> <a href="/tags/slick-pg/" style="font-size: 10px;">slick-pg</a> <a href="/tags/spark/" style="font-size: 14px;">spark</a> <a href="/tags/spark-sql/" style="font-size: 10px;">spark sql</a> <a href="/tags/sphinx-doc/" style="font-size: 10px;">sphinx-doc</a> <a href="/tags/spring/" style="font-size: 16px;">spring</a> <a href="/tags/spring-boot/" style="font-size: 12px;">spring-boot</a> <a href="/tags/spring-cloud/" style="font-size: 10px;">spring-cloud</a> <a href="/tags/spring-log/" style="font-size: 10px;">spring-log</a> <a href="/tags/sqlx/" style="font-size: 10px;">sqlx</a> <a href="/tags/ssl/" style="font-size: 10px;">ssl</a> <a href="/tags/ssl-config/" style="font-size: 10px;">ssl-config</a> <a href="/tags/system-manager/" style="font-size: 10px;">system-manager</a> <a href="/tags/tengine/" style="font-size: 11px;">tengine</a> <a href="/tags/test/" style="font-size: 10px;">test</a> <a href="/tags/tokio/" style="font-size: 10px;">tokio</a> <a href="/tags/toml/" style="font-size: 10px;">toml</a> <a href="/tags/top-k/" style="font-size: 10px;">top-k</a> <a href="/tags/try/" style="font-size: 10px;">try</a> <a href="/tags/unix/" style="font-size: 10px;">unix</a> <a href="/tags/upgrading/" style="font-size: 10px;">upgrading</a> <a href="/tags/upstream/" style="font-size: 10px;">upstream</a> <a href="/tags/user-system/" style="font-size: 10px;">user-system</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/vm-overcommit-memory/" style="font-size: 10px;">vm.overcommit_memory</a> <a href="/tags/vue/" style="font-size: 10px;">vue</a> <a href="/tags/wal/" style="font-size: 10px;">wal</a> <a href="/tags/webflux/" style="font-size: 11px;">webflux</a> <a href="/tags/%E4%B8%AD%E6%96%87%E5%AD%97%E7%AC%A6%E9%9B%86/" style="font-size: 10px;">中文字符集</a> <a href="/tags/%E4%BA%92%E6%93%8D%E4%BD%9C/" style="font-size: 10px;">互操作</a> <a href="/tags/%E5%85%A5%E9%97%A8/" style="font-size: 10px;">入门</a> <a href="/tags/%E5%8D%8E%E4%B8%BA%E4%BA%91/" style="font-size: 10px;">华为云</a> <a href="/tags/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/" style="font-size: 10px;">反向代理</a> <a href="/tags/%E5%B7%A5%E4%BD%9C/" style="font-size: 11px;">工作</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E5%BE%AE%E4%BF%A1%E5%BC%80%E5%8F%91/" style="font-size: 11px;">微信开发</a> <a href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" style="font-size: 14px;">微服务</a> <a href="/tags/%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84/" style="font-size: 10px;">技术架构</a> <a href="/tags/%E6%8A%80%E6%9C%AF%E9%80%89%E5%9E%8B/" style="font-size: 10px;">技术选型</a> <a href="/tags/%E6%96%AD%E7%82%B9%E4%B8%8A%E4%BC%A0/" style="font-size: 10px;">断点上传</a> <a href="/tags/%E6%96%AD%E7%82%B9%E4%B8%8B%E8%BD%BD/" style="font-size: 10px;">断点下载</a> <a href="/tags/%E6%B4%BB%E5%8A%A8%E6%8A%A5%E5%90%8D/" style="font-size: 10px;">活动报名</a> <a href="/tags/%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F/" style="font-size: 10px;">环境变量</a> <a href="/tags/%E7%94%9F%E6%B4%BB/" style="font-size: 10px;">生活</a> <a href="/tags/%E7%AD%96%E6%9C%8D%E5%8A%A1/" style="font-size: 10px;">策服务</a> <a href="/tags/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/" style="font-size: 10px;">负载均衡</a> <a href="/tags/%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84/" style="font-size: 10px;">软件架构</a> <a href="/tags/%E9%80%BB%E8%BE%91%E5%A4%8D%E5%88%B6/" style="font-size: 10px;">逻辑复制</a> <a href="/tags/%E9%85%8D%E7%BD%AE/" style="font-size: 10px;">配置</a> <a href="/tags/%E9%98%BF%E9%87%8C%E4%BA%91/" style="font-size: 10px;">阿里云</a> <a href="/tags/%E9%9B%86%E7%BE%A4/" style="font-size: 13px;">集群</a>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a target="_blank" rel="noopener" href="http://hexo.io">Hexo</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+            
+        
+    </div>
+</aside>
+
+                </div>
+            </div>
+        </div>
+        <footer id="footer">
+    <div class="container">
+        <div class="container-inner">
+            <a id="back-to-top" href="javascript:;"><i class="icon fa fa-angle-up"></i></a>
+            <div class="credit">
+                <h1 class="logo-wrap">
+                    <a href="/" class="logo"></a>
+                </h1>
+                <p>&copy; 2024 杨景</p>
+                
+                <p>Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="https://github.com/ppoffice" target="_blank">PPOffice</a></p>
+                
+            </div>
+            <div class="footer-plugins">
+              
+    
+
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+    </div>
+    
+
+
+    
+        
+<script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-share.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-video.min.js"></script>
+
+    
+    
+        
+<script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+    
+    
+
+    
+    
+    
+
+
+
+<!-- Custom Scripts -->
+
+<script src="/js/main.js"></script>
+
+
+</body>
+</html>
