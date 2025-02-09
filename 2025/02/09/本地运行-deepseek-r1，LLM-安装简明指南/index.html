@@ -12,16 +12,16 @@
     
     <meta name="keywords" content="ollama,deepseek-r1,deepseek,llm" />
     
-    <meta name="description" content="本文是本地运行 deepseek - r1 的 LLM 安装指南。涵盖 Ollama 安装（分 macOS、Linux、Windows 系统）、DeepSeek - R1 模型下载与运行（命令行及 API 调用）、常用命令、注意事项，还介绍了 Chatbox 安装与使用，助力用户顺利部署。本文将介绍如下内容：  下载并安装 ollama 使用 ollama 运行各种模型（LLM） 安装 chatb">
+    <meta name="description" content="本文是本地运行 deepseek-r1 的 LLM 安装指南。涵盖 Ollama 安装（分 macOS、Linux、Windows 系统）、模型下载与运行（命令行及 API 调用）、常用命令、注意事项，还介绍了 Chatbox 安装与使用，助力用户顺利部署。  下载并安装 ollama 使用 ollama 运行各种模型（LLM） 安装 chatbox 通过图形化界面使用模型  Ollama本地运行">
 <meta property="og:type" content="article">
 <meta property="og:title" content="本地运行 deepseek-r1，LLM 安装简明指南">
 <meta property="og:url" content="https://yangjing.github.io/2025/02/09/%E6%9C%AC%E5%9C%B0%E8%BF%90%E8%A1%8C-deepseek-r1%EF%BC%8CLLM-%E5%AE%89%E8%A3%85%E7%AE%80%E6%98%8E%E6%8C%87%E5%8D%97/index.html">
 <meta property="og:site_name" content="杨景的个人站点">
-<meta property="og:description" content="本文是本地运行 deepseek - r1 的 LLM 安装指南。涵盖 Ollama 安装（分 macOS、Linux、Windows 系统）、DeepSeek - R1 模型下载与运行（命令行及 API 调用）、常用命令、注意事项，还介绍了 Chatbox 安装与使用，助力用户顺利部署。本文将介绍如下内容：  下载并安装 ollama 使用 ollama 运行各种模型（LLM） 安装 chatb">
+<meta property="og:description" content="本文是本地运行 deepseek-r1 的 LLM 安装指南。涵盖 Ollama 安装（分 macOS、Linux、Windows 系统）、模型下载与运行（命令行及 API 调用）、常用命令、注意事项，还介绍了 Chatbox 安装与使用，助力用户顺利部署。  下载并安装 ollama 使用 ollama 运行各种模型（LLM） 安装 chatbox 通过图形化界面使用模型  Ollama本地运行">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://yangjing.github.io/img/ai/m1-vs-nvidia.jpg">
 <meta property="article:published_time" content="2025-02-09T02:23:21.000Z">
-<meta property="article:modified_time" content="2025-02-09T03:05:23.617Z">
+<meta property="article:modified_time" content="2025-02-09T03:33:13.272Z">
 <meta property="article:author" content="杨景">
 <meta property="article:tag" content="ollama">
 <meta property="article:tag" content="deepseek-r1">
@@ -185,7 +185,7 @@
 <div class="article-date">
   <i class="fa fa-calendar-plus-o"></i>
   <a href="/2025/02/09/%E6%9C%AC%E5%9C%B0%E8%BF%90%E8%A1%8C-deepseek-r1%EF%BC%8CLLM-%E5%AE%89%E8%A3%85%E7%AE%80%E6%98%8E%E6%8C%87%E5%8D%97/" class="article-date">
-     <time datetime="2025-02-09T03:05:23.617Z" itemprop="dateModified">2025-02-09</time>
+     <time datetime="2025-02-09T03:33:13.272Z" itemprop="dateModified">2025-02-09</time>
   </a>
 </div>
 
@@ -212,7 +212,7 @@
 
             
 
-            <p>本文是本地运行 deepseek - r1 的 LLM 安装指南。涵盖 Ollama 安装（分 macOS、Linux、Windows 系统）、DeepSeek - R1 模型下载与运行（命令行及 API 调用）、常用命令、注意事项，还介绍了 Chatbox 安装与使用，助力用户顺利部署。本文将介绍如下内容：</p>
+            <p>本文是本地运行 deepseek-r1 的 LLM 安装指南。涵盖 Ollama 安装（分 macOS、Linux、Windows 系统）、模型下载与运行（命令行及 API 调用）、常用命令、注意事项，还介绍了 Chatbox 安装与使用，助力用户顺利部署。</p>
 <ul>
 <li>下载并安装 ollama</li>
 <li>使用 ollama 运行各种模型（LLM）</li>
@@ -241,7 +241,7 @@
 <h3 id="四、常用命令"><a href="#四、常用命令" class="headerlink" title="四、常用命令"></a>四、常用命令</h3><ul>
 <li><strong>列出已安装模型</strong><br><code>ollama list</code></li>
 <li><strong>删除模型</strong><br><code>ollama rm deepseek-r1</code></li>
-<li><strong>查看运行日志</strong><br><code>ollama serve</code>（在前台运行查看实时日志）</li>
+<li><strong>查看正在运行模型</strong><br><code>ollama ps</code></li>
 </ul>
 <h3 id="硬件要求"><a href="#硬件要求" class="headerlink" title="硬件要求"></a>硬件要求</h3><ul>
 <li>至少 8GB 可用内存（7B 模型）。</li>
@@ -249,7 +249,7 @@
 </ul>
 <p><img src="/img/ai/m1-vs-nvidia.jpg" alt="M1 vs Nvidia GPU 性能对比"></p>
 <hr>
-<p>通过以上步骤，即可在本地顺利运行 DeepSeek-R1 模型。如果遇到问题，可通过 <code>ollama logs</code> 查看错误信息或检查模型文件完整性。</p>
+<p>通过以上步骤，即可在本地顺利运行 DeepSeek-R1 模型。</p>
 <h2 id="Chatbox"><a href="#Chatbox" class="headerlink" title="Chatbox"></a>Chatbox</h2><p>Chatbox AI 是一款 AI 客户端应用和智能助手，支持众多先进的 AI 模型和 API，可在 Windows、MacOS、Android、iOS、Linux 和网页版上使用。访问 <a target="_blank" rel="noopener" href="https://chatboxai.app/zh#download">https://chatboxai.app/zh#download</a> 下载适合你操作系统的版本。</p>
 <h3 id="安装-Chatbox"><a href="#安装-Chatbox" class="headerlink" title="安装 Chatbox"></a>安装 Chatbox</h3><p>以 Mac 系统为例，双击下载的 dmg 文件，将 Chatbox AI 安装到你的系统。<br><img src="/img/ai/install-chatbox.png" alt="安装 Chatbox"></p>
 <h3 id="使用-Chatbox"><a href="#使用-Chatbox" class="headerlink" title="使用 Chatbox"></a>使用 Chatbox</h3><h4 id="选择-Ollama-模型"><a href="#选择-Ollama-模型" class="headerlink" title="选择 Ollama 模型"></a>选择 Ollama 模型</h4><p>点击 <strong>设置</strong> 按钮选择 <strong>模型提供方</strong> 为 <code>Ollama API</code>（需要确定 Ollama 服务已运行）。</p>
@@ -345,12 +345,14 @@
         "dateCreated": "2025-02-09",
         "dateModified": "2025-02-09",
         "url": "https://yangjing.github.io/2025/02/09/本地运行-deepseek-r1，LLM-安装简明指南/",
-        "description": "本文是本地运行 deepseek - r1 的 LLM 安装指南。涵盖 Ollama 安装（分 macOS、Linux、Windows 系统）、DeepSeek - R1 模型下载与运行（命令行及 API 调用）、常用命令、注意事项，还介绍了 Chatbox 安装与使用，助力用户顺利部署。本文将介绍如下内容：
+        "description": "本文是本地运行 deepseek-r1 的 LLM 安装指南。涵盖 Ollama 安装（分 macOS、Linux、Windows 系统）、模型下载与运行（命令行及 API 调用）、常用命令、注意事项，还介绍了 Chatbox 安装与使用，助力用户顺利部署。
 
 下载并安装 ollama
 使用 ollama 运行各种模型（LLM）
-安装 chatb",
-        "wordCount": 475
+安装 chatbox 通过图形化界面使用模型
+
+Ollama本地运行",
+        "wordCount": 467
     }
 </script>
 
