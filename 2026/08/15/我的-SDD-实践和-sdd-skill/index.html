@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+
+    
+
+    
+    <title>我的 SDD 实践和 sdd skill | 杨景的个人站点</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="keywords" content="claude-code,skill,AI 编程,spec-driven-development,软件工程" />
+    
+    <meta name="description" content="过去半年，我全程用 AI 编程智能体（Claude Code &#x2F; zcode）开发了两个产品：hetuos 是多业务线的 AI 应用平台，hetu-creative 是面向创作者的 AI 课程创作产品。两个仓库共用同一套技术栈：后端 Rust + PostgreSQL，契约 Protobuf + ConnectRPC，前端 React 19 + TanStack Router&#x2F;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="我的 SDD 实践和 sdd skill">
+<meta property="og:url" content="https://yangjing.github.io/2026/08/15/%E6%88%91%E7%9A%84-SDD-%E5%AE%9E%E8%B7%B5%E5%92%8C-sdd-skill/index.html">
+<meta property="og:site_name" content="杨景的个人站点">
+<meta property="og:description" content="过去半年，我全程用 AI 编程智能体（Claude Code &#x2F; zcode）开发了两个产品：hetuos 是多业务线的 AI 应用平台，hetu-creative 是面向创作者的 AI 课程创作产品。两个仓库共用同一套技术栈：后端 Rust + PostgreSQL，契约 Protobuf + ConnectRPC，前端 React 19 + TanStack Router&#x2F;">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-08-15T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-15T08:33:49.554Z">
+<meta property="article:author" content="杨景">
+<meta property="article:tag" content="claude-code">
+<meta property="article:tag" content="skill">
+<meta property="article:tag" content="AI 编程">
+<meta property="article:tag" content="spec-driven-development">
+<meta property="article:tag" content="软件工程">
+<meta name="twitter:card" content="summary">
+    
+
+    
+
+    
+
+    
+<link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/libs/titillium-web/styles.css">
+
+    
+<link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+<script src="/libs/jquery/3.5.0/jquery.min.js"></script>
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+
+    
+    
+    
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <div id="wrap">
+        <header id="header">
+    <div id="header-outer" class="outer">
+        <div class="container">
+            <div class="container-inner">
+                <div id="header-title">
+                    <h1 class="logo-wrap">
+                        <a href="/" class="logo"></a>
+                    </h1>
+                    
+                </div>
+                <div id="header-inner" class="nav-container">
+                    <a id="main-nav-toggle" class="nav-icon fa fa-bars"></a>
+                    <div class="nav-container-inner">
+                        <ul id="main-nav">
+                            
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/">主页</a>
+                                </li>
+                            
+                                    <ul class="main-nav-list"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/ai/">ai</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/c-c/">c/c++</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/data/">data</a><ul class="main-nav-list-child"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/data/ambari-hdp/">ambari/hdp</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/data/cassandra/">cassandra</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/data/elasticsearch/">elasticsearch</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/data/flink/">flink</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/data/greenplum/">greenplum</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/data/postgresql/">postgresql</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/data/pulsar/">pulsar</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/data/spark/">spark</a></li></ul></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/essay/">essay</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/java/">java</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/programming/">programming</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/rust/">rust</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/scala/">scala</a><ul class="main-nav-list-child"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/scala/akka/">akka</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/scala/learning-scala/">learning scala</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/scala/scala%E5%AE%9E%E6%88%98/">scala实战</a></li></ul></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/unix-linux/">unix/linux</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/work/">work</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E4%BD%9C%E5%93%81/">作品</a><ul class="main-nav-list-child"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E4%BD%9C%E5%93%81/akka-cookbook/">akka-cookbook</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E4%BD%9C%E5%93%81/akka-http-chinese/">akka-http-chinese</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E4%BD%9C%E5%93%81/lecture/">lecture</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E4%BD%9C%E5%93%81/nacos-sdk-scala/">nacos-sdk-scala</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E4%BD%9C%E5%93%81/scala-web-development/">scala-web-development</a></li></ul></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5/">工程实践</a></li></ul>
+                                
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/2016/07/26/about/">关于</a>
+                                </li>
+                            
+                        </ul>
+                        <nav id="sub-nav">
+                            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+</div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+        <div class="container">
+            <div class="main-body container-inner">
+                <div class="main-body-inner">
+                    <section id="main">
+                        <div class="main-body-header">
+    <h1 class="header">
+    
+    <a class="page-title-link" href="/categories/%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5/">工程实践</a>
+    </h1>
+</div>
+
+                        <div class="main-body-content">
+                            <article id="post-我的-SDD-实践和-sdd-skill" class="article article-single article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+        我的 SDD 实践和 sdd skill
+        </h1>
+    
+
+            </header>
+        
+        
+            <div class="article-meta">
+                
+  <div class="article-date">
+    <i class="fa fa-calendar"></i>
+    <a href="/2026/08/15/%E6%88%91%E7%9A%84-SDD-%E5%AE%9E%E8%B7%B5%E5%92%8C-sdd-skill/" class="article-date">
+       <time datetime="2026-08-15T02:00:00.000Z" itemprop="datePublished">2026-08-15</time>
+    </a>
+  </div>
+
+
+<div class="article-date">
+  <i class="fa fa-calendar-plus-o"></i>
+  <a href="/2026/08/15/%E6%88%91%E7%9A%84-SDD-%E5%AE%9E%E8%B7%B5%E5%92%8C-sdd-skill/" class="article-date">
+     <time datetime="2026-08-15T08:33:49.554Z" itemprop="dateModified">2026-08-15</time>
+  </a>
+</div>
+
+
+                
+
+                
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link-link" href="/tags/AI-%E7%BC%96%E7%A8%8B/" rel="tag">AI 编程</a>, <a class="tag-link-link" href="/tags/claude-code/" rel="tag">claude-code</a>, <a class="tag-link-link" href="/tags/skill/" rel="tag">skill</a>, <a class="tag-link-link" href="/tags/spec-driven-development/" rel="tag">spec-driven-development</a>, <a class="tag-link-link" href="/tags/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/" rel="tag">软件工程</a>
+    </div>
+
+                
+
+                
+
+            </div>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+            
+
+            
+
+            
+
+            <p>过去半年，我全程用 AI 编程智能体（Claude Code &#x2F; zcode）开发了两个产品：hetuos 是多业务线的 AI 应用平台，hetu-creative 是面向创作者的 AI 课程创作产品。两个仓库共用同一套技术栈：后端 Rust + PostgreSQL，契约 Protobuf + ConnectRPC，前端 React 19 + TanStack Router&#x2F;Query + Ant Design 6。</p>
+<p>把 SDD 用好后，即使不依赖 Claude &#x2F; Codex，也能达到很好的开发质量和效率——最近半年我主要使用 GLM &#x2F; Kimi，而现在最常用的开发工具是 zcode。</p>
+<p>AI 写代码的效率没什么可抱怨的，真正反复出问题的是另外三件事：</p>
+<ol>
+<li><strong>文档要么不写，要么复述代码</strong>。让它补个设计文档，交上来的多半是把函数体翻译成中文散文，读了等于没读；真正该写的「为什么这样选、否决了什么」，一个字没有。</li>
+<li><strong>仓库规则越攒越多，且无法复用</strong>。规则散在 AGENTS.md 里，每次会话全量注入，越长越贵也越长越钝。开第二个仓库时，这些规则几乎要全部重写一遍——因为里面混着「换项目也不变的规则」和「只有这个仓库才成立的取值」。</li>
+<li><strong>AI 的自述不是证据</strong>。「已测试」「应该没问题」是它的口头禅，但没有可追踪、可重复的判定机制，验收就是玄学。</li>
+</ol>
+<p>这些问题的答案，是两个仓库里逐步长出来的一套 SDD 规范，以及由它反向提炼成的 sdd skill。本文先讲这套规范在两个仓库里的实际运转——文档原则、验收机制、执行计划、UAT 与工程底座，再讲 sdd skill 本身的设计。</p>
+<h2 id="第一原则：文档只写代码无法表达的内容"><a href="#第一原则：文档只写代码无法表达的内容" class="headerlink" title="第一原则：文档只写代码无法表达的内容"></a>第一原则：文档只写代码无法表达的内容</h2><p>这是整个规范集里优先级最高的一条，先于一切载体、结构与流程规则：<strong>文档只写代码无法表达的内容</strong>。一段内容若不能通过这一问，写得再规范也是负债——读者要读它，维护者要跟着代码改它，而它本可以由读代码直接得到。</p>
+<p>落到操作上，就是写下每一段之前先问一句：<strong>「删掉它，只读代码的人会失去什么？」</strong> 答不上来，或答案是「少打几分钟字」，则删。</p>
+<p>准入清单只收五类代码确实表达不了、缺失即知识失传的内容：</p>
+<table>
+<thead>
+<tr>
+<th>类别</th>
+<th>承载什么</th>
+<th>缺失的后果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>意图与规格</td>
+<td>为什么需要它、必须满足什么、范围与非范围</td>
+<td>后来者从实现反推需求，把缺陷当特性</td>
+</tr>
+<tr>
+<td>对外契约</td>
+<td>跨边界的接口、字段、错误码、权限码及兼容承诺</td>
+<td>消费方靠猜，破坏性变更无从识别</td>
+</tr>
+<tr>
+<td>决策理由</td>
+<td>为何这样选、否决了哪些替代方案、代价是什么</td>
+<td>已被否决的方案被反复重提</td>
+</tr>
+<tr>
+<td>领域术语</td>
+<td>业务词汇的精确定义与消歧</td>
+<td>同一个词在两个模块指两件事</td>
+</tr>
+<tr>
+<td>运维知识</td>
+<td>部署形态、环境差异、故障信号与处置</td>
+<td>代码里根本不存在这些事实</td>
+</tr>
+</tbody></table>
+<p>禁入清单则针对 AI 最爱犯的毛病：复述函数体、复述外部官方文档、复述已在别处定义的条款。第三条尤其值得展开——引用其它文档时只写「主题 → 链接」，禁止附带条款正文，因为<strong>带正文的摘要必然滞后于真相源，摘要一旦带上正文就变成第二个（错误的）真相源</strong>。</p>
+<p>这条原则落到大活儿上是什么样？看 hetu-creative 的 <code>docs/designs/ai-usage-billing.md</code>。这份文档承载 AI 用量计费的「决策理由与运维知识」，开头明确声明：表结构、RLS、权限码、proto 字段的现行真相源是 <code>contracts/</code> 与代码，本文不复述。那它写什么？写这种东西：</p>
+<blockquote>
+<table>
+<thead>
+<tr>
+<th>provider</th>
+<th>缓存机制</th>
+<th>trial 实际计费</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>DeepSeek</td>
+<td>官方支持 prompt cache，<strong>但 rig 0.39 client 默认禁用 cache</strong></td>
+<td>全部按未命中价计费</td>
+</tr>
+</tbody></table>
+<p>DeepSeek 的 cache 机制是「能吃但没吃」——rig client 没启用。Moonshot &#x2F; Qwen 是「自动在吃」。这条差异直接影响 cost 数据解读：DeepSeek 的 cost 偏高是 client 限制，不是模型贵。</p>
+</blockquote>
+<p>这段表格从代码里读不出来吗？严格说读得出来——翻 rig 的源码能找到那个默认值。但「推断错误的代价」太高：不写它，每个看成本报表的人都会得出「DeepSeek 比 Moonshot 贵」的错误结论。所以规范里还有一条豁免判据：对外接口、fail-closed 分支、幂等与重放语义这类<strong>推断错误代价高的行为</strong>，即使能推断也必须显式写明。判据不是「能否推断」，是「推错了多贵」。</p>
+<h2 id="规则必须可验证：Verification-Oracle-与-Human-Approval-Gate"><a href="#规则必须可验证：Verification-Oracle-与-Human-Approval-Gate" class="headerlink" title="规则必须可验证：Verification Oracle 与 Human Approval Gate"></a>规则必须可验证：Verification Oracle 与 Human Approval Gate</h2><p>针对「AI 自述不是证据」的问题，规范强制每条关键验收都写成三列表：验收项 ↔ Verification Oracle ↔ Evidence。Verification Oracle 是能够以可追踪、可重复方式判定验收是否成立的权威机制——自动化测试、契约生成一致性、静态检查、人工审批记录。「已测试」不是 Oracle，「API 测试（requires_password_change + ChangeInitialPassword）」才是。</p>
+<p>hetuos 身份中心规格里的真实验收表：</p>
+<table>
+<thead>
+<tr>
+<th>验收项</th>
+<th>Verification Oracle</th>
+<th>Evidence</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>代建受限激活 + 首登强制改密</td>
+<td>API 测试（requires_password_change + ChangeInitialPassword）</td>
+<td>测试结果</td>
+</tr>
+<tr>
+<td>跨上下文数据隔离</td>
+<td>API 测试：personal 上下文不可见租户数据</td>
+<td>测试结果</td>
+</tr>
+<tr>
+<td>实名要素脱敏存储</td>
+<td>契约与实现检视（SECURITY §5 机制）</td>
+<td>review 记录</td>
+</tr>
+</tbody></table>
+<p>验收只能由人判断时，禁止硬凑一个机械 Oracle，必须显式标记 Human Approval Gate 并写明 evidence 形态。hetuos 康养系统规格的验收表最后一行，Oracle 列写的就是 Human Approval Gate，Evidence 列写「签署 &#x2F; 商定记录」——具体到知情同意这一条，还附着法务认可记录：「紧急例外（PDPA deemed consent emergency，法务 2026-07-23 认可）：救治场景 MUST 先行救治，MUST 在 24-48h 内补签或留痕」。AI 无法自证的部分被显式隔离出来，而不是混在「已完成」里。</p>
+<p>配套的表述纪律是 BCP 14（RFC 2119&#x2F;8174）：规范性语句一律用大写的 MUST &#x2F; MUST NOT &#x2F; SHOULD &#x2F; MAY，BDD 场景的 Then 里全是 MUST：</p>
+<figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Scenario</span>: 租户解绑不影响 personal 上下文</span><br><span class="line"><span class="keyword">Given</span> 一个同时具备 personal 上下文与某租户 tenant 上下文的 User</span><br><span class="line"><span class="keyword">When</span> 该租户解除其成员关系</span><br><span class="line"><span class="keyword">Then</span> personal 上下文 MUST 保持可用</span><br><span class="line"><span class="keyword">And</span> 该 User 的全局登录身份 MUST 不受影响</span><br></pre></td></tr></table></figure>
+
+<p>小写的 “must” 只是叙述，评审时无法区分硬约束和作者语气——这个区分对人是便利，对 AI 是必需，因为 AI 需要知道哪些条款可以用工程判断变通，哪些变通即违规。</p>
+<p>还有一条容易被忽视的纪律：<strong>UAT 不等于自动化测试</strong>。覆盖矩阵里 <code>AUTO</code> 标记的语义是「存在自动化证据文件，不表示本轮已执行或已通过」。hetuos 的 UAT 覆盖矩阵把「功能入口 ↔ Spec 章节 ↔ 人工 UAT ↔ 自动化证据」四层对齐成一张活账本，基线数字可以直接引用：四前端 52 路由、builder 域 9 service &#x2F; 64 RPC、48 个 API suite、e2e 20 例。把「文档声称覆盖」变成可 grep 的账，是这套规范一直在做的事。</p>
+<h2 id="规则会逼出文档：一次真实的连锁反应"><a href="#规则会逼出文档：一次真实的连锁反应" class="headerlink" title="规则会逼出文档：一次真实的连锁反应"></a>规则会逼出文档：一次真实的连锁反应</h2><p>规范集里有一条强制条款：边界信任模型是架构选择而非默认值，项目 MUST 在 ADR（Architecture Decision Record，架构决策记录）中显式声明，二选一：per-service trust-root（无网关，每个服务自解凭证）或 trusted gateway（前置网关验签注入身份头）。</p>
+<p>hetuos 实际上早就采用了模型 A，但从未为此写过 ADR——代码是这么写的而已。规范落地后，这条条款把这份隐性决策逼成了一份显性文档：ADR-0007《边界信任模型采用 per-service trust-root》。它的 Status 字段相当诚实：</p>
+<blockquote>
+<p>Accepted（2026-07-26。本 ADR 为<strong>追认既有决策 + 补独立载体</strong>：该模型自 SECURITY.md 安全原则确立起即已生效并全量落地，此前分散声明于三处非 ADR 载体。SDD §4.6 要求信任模型必须由 ADR 声明，故补此记录。不改变任何现行行为。）</p>
+</blockquote>
+<p>补写 ADR 的过程做了一次落地事实核查，结果发现了真东西：<code>crates/hetu-core</code> 的 <code>EntryKind</code> 枚举里躺着一个前身项目遗留的 <code>GatewayProxied</code> 分支——模型 B 的语义，文档注释还写着「流量来自可信网关并 MUST 携带 trusted header」。hetuos 无网关，五个 bin 一律走别的分支，这个分支零使用。</p>
+<p>ADR 的处置不是加个 deprecated 注释，而是直接删除，理由写在否决方案里：</p>
+<blockquote>
+<p>一个无人走的分支就是一条无人看守的漂移路径——翻转一个已有枚举取值比新增枚举容易得多，且不会触发评审。故直接删除该档并在模块文档写明「刻意不设」，把重新引入的代价提高到显式改枚举定义 + match 分支。</p>
+</blockquote>
+<p>于是规范、文档、代码在同一个 commit 里互相校准：条款要求落 ADR → 补写 ADR 时核查代码 → 发现并删除危险的死分支 → 删除动作本身又被 ADR 记录。这条链路里没有任何一步是「为了文档而文档」，每一步都在消除一个真实的漂移风险。</p>
+<h2 id="执行计划是易耗品：归档可删除"><a href="#执行计划是易耗品：归档可删除" class="headerlink" title="执行计划是易耗品：归档可删除"></a>执行计划是易耗品：归档可删除</h2><p>两个仓库的迭代都跑在同一套执行计划体系上，目录完全同构：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">docs/exec-plans/</span><br><span class="line">├── PLANS.md      # 活跃计划索引 / 状态板</span><br><span class="line">├── TODOS.md      # 未规划但后续需要做的事项</span><br><span class="line">├── active/       # 进行中的计划</span><br><span class="line">├── deferred/     # 暂缓的计划</span><br><span class="line">└── archived/     # 已完结、已回流的计划</span><br></pre></td></tr></table></figure>
+
+<p><code>PLANS.md</code> 对自己的定位很克制：状态板，非真相源——业务规则在 <code>docs/specs/</code>，设计在 <code>docs/designs/</code>，计划明细在 <code>active/&lt;plan&gt;.md</code> 自己身上，它只保留活跃计划索引和当前状态，六列：计划、状态、负责人、目标版本、验收标准、下一步。「目标版本」有个反直觉的注解：它是功能集归属，MUST NOT 解读为交付先后，也不绑定仓库版本号或 tag。hetuos 的 <code>PLANS.md</code> 里还有一节「全量 UAT 触发点」，把「下一次全量回归什么时候跑」写成显式约定：下个行为变更批次完结时；内部重构批次按 v0.7 先例不需全量回归。</p>
+<p><code>active/</code> 里的计划是稳定形态，不是随手备忘：文首字段表（Status &#x2F; Owner &#x2F; 目标版本 &#x2F; 依赖），正文按「目标 → 范围（In &#x2F; Out）→ 关键设计 → 任务分解 → 验收标准 → 完结前置」组织，hetuos 的验收表同样带 Verification Oracle 列。hetu-creative 的阶段表则把完成证据就地回填在验收格子里——「（✅ 2026-08-15：backend 141 + task-worker 16 全绿，含 DB 集成测试）」——计划和证据不分离，完成情况没有第二处可查。它的计划还多一节「实现决策记录」，规则就写在标题后面：只记代码不能说明的。比如 t044 里这条：「<code>ZipWriter</code> 适配形态：本地临时文件中转，不做 channel Seek 适配」——zip 库要求 <code>Write + Seek</code>（local header 要回写），流式 sink 实现不了回写；这个取舍代码里读得出结果、读不出理由。</p>
+<p><code>deferred/</code> 针对计划最容易的失控形态：等一个外部回复，整条线悬着。规则明文：默认 MUST NOT 因外部回复未到而阻塞开发，能配置 &#x2F; 参数化承载的先承载，剩下的暂停并上报 owner。每份暂缓计划文首 MUST 记 Status（含暂停日期）、暂停理由、恢复条件，恢复条件未成立前 MUST NOT 重启；措辞还必须区分「启动前置」（缺它无法开工）与「上线门」（不阻塞开发 &#x2F; 联调 &#x2F; E2E，但上线前必须补齐）——hetuos 暂缓的合规特性计划，恢复条件逐项挂到送审稿的八个待法务确认问题（L-1 到 L-8）上，不是一句「等法务」。</p>
+<p>设计上最反直觉的一条是：<strong>归档不是永久保管</strong>。归档项满足三个条件后 SHOULD 删除——已真实完整实现、结论已回流现行规范（specs &#x2F; designs &#x2F; SDD）、无现行文档依赖。决策过程一律归 git 历史。</p>
+<p>理由是回流纪律的单向性：回流时把事实结论<strong>抄写</strong>进现行 SSOT，现行文档禁止反向链接归档计划作为出处——归档文件注定被删，SSOT 挂上去等于预埋 broken link。而「先回流、再删除」的顺序保证了删掉的是纯过程记录，不是知识。</p>
+<p>这套机制实际跑起来的强度超出我的预期。hetuos 近一个月里批量清理了两轮已完结计划共三十余份，删除的 commit message 逐份记录回流去向。hetu-creative 更彻底：<code>archived/</code> 目录里现在一个计划文件都没有，只剩那份写着清理规则的 README，删除留痕按日期记了六批——最后三批的留痕细到这种程度：</p>
+<blockquote>
+<p>2026-08-13 删除 T-039：5 阶段全部实现，稳定行为规则回流新建 <code>designs/build-artifact-incremental-reuse.md</code>（判据 &#x3D; 全输入指纹 &#x2F; stale 只比 hash 字段 &#x2F; 按层精确失效），同步清理代码注释 ~75 处 <code>T-039 §</code> 标签。</p>
+<p>2026-08-14 删除 T-040：阶段 0-5 全部实现（Rust 523 + 前端 107 全绿），proto 契约形态与五条嵌套语义以 contracts 注释 + 代码注释自包含，判无需回流 design，同步清理 ~90 处 <code>t040 §N</code> 注释标签，顺手修复归档漏网断链 ~13 处。</p>
+</blockquote>
+<p>「判无需回流 design，对齐 T-033『代码为真相源』先例」这句话值得停一下：回流的目标不一定是文档，<strong>代码注释若是该知识的最佳载体，回流目的地就是代码</strong>。知识回到离事实最近的地方，而不是堆进一个中央文档库。</p>
+<p>技术债的处置口径同样是为「防止攒成 backlog」设计的，两个仓库的 Agent 规则文件里都是同一段：</p>
+<ol>
+<li><strong>能立即修</strong> → 直接修，禁止登记到任何地方——登记本身就是把该修的事推后；</li>
+<li><strong>修不了 &#x2F; 不该现在修</strong> → <code>TODOS.md</code>，必须写明解除或触发条件；无条件的条目不收，那是变相 backlog；</li>
+<li><strong>难度过大或涉及取舍</strong> → 输出原因和建议交人决策，禁止自行取舍。</li>
+</ol>
+<p>登记同样有格式纪律。hetu-creative 的 TODOS 用全局流水号（与计划文件同一序列，t044 对应 T-044），每条分节：现状描述加三个固定字段——<strong>解除条件</strong>（MUST 可验证：外部版本号、部署状态、商务准入，不接受「以后再说」）、<strong>来源</strong>（指向把它逼出来的那条计划）、<strong>落地方案</strong>。最硬的一条是：<strong>条目解除后 MUST 移除，不是标完成</strong>——「本文件不是 backlog，是『外部条件未到』的等待区」。hetuos 的 TODOS 是表格式：依赖版本约束表（依赖 &#x2F; 当前 &#x2F; 最新 &#x2F; 阻塞方 &#x2F; 解除条件），比如 opendal 卡在 0.57 这一格——0.58.0 被上游 yanked、0.58.1 未发布，连带 quick-xml 的两条 RUSTSEC 通告只能在 <code>deny.toml</code> 里临时 ignore，实际风险评估（只解析受信云服务经 TLS 的 XML 响应）和解除条件（上游发布非 yanked 版本后升级并移除 ignore）整段留在表里。条目解除时则留一段带日期的「出表注记」——谁触发、交付了什么、按登记规则第几条出表。清零是常态：一个只进不出、永不出清的清单，很快就没有人会读。</p>
+<p>例外是安全面：基线已定、服务端强制点未接线的安全缺口单独走 <code>SECURITY.md</code> §9，禁止混进 TODOS——混放会让安全缺口淹没在普通技术债里。hetu-creative 的 TODOS 里因此出现了一些很有意思的条目：与竞品仓库逐能力对比后，把<strong>双方都未实现</strong>的能力登记为带触发条件的储备项，而不是立即排期。</p>
+<h2 id="UAT：把人工验收也做成流程"><a href="#UAT：把人工验收也做成流程" class="headerlink" title="UAT：把人工验收也做成流程"></a>UAT：把人工验收也做成流程</h2><p>自动化测试再全，也有一层只有人能验：界面顺不顺手、文案对不对、真实数据下流程走不走得通。这一层在两个仓库里不是「到时候点一点」，而是 <code>docs/uat/</code> 下一套有编排、有门禁、有留痕的流程：<code>manual-acceptance-runbook.md</code> 把一轮验收拆成 S0 到 S8 的固定章节，每个业务域一份场景文档（操作 → 预期），<code>coverage-matrix.md</code> 就是前文那张把功能入口 ↔ Spec 章节 ↔ 人工 UAT ↔ 自动化证据对齐的活账本，<code>reports/</code> 放当轮报告，过期报告按规则清理。</p>
+<p>进场先过 S0。hetuos 的环境准备交给 <code>scripts/uat.sh</code>：探活、做新鲜度守卫（环境在跑但已过期就自动重建）、打印入口 URL 和测试账号——脚本头注释里有一句准确的自我声明：它自己不跑任何测试，跑测试的是拿着场景文档走浏览器的人。然后自动化门禁先绿，runbook 原文就是「自动化门禁先绿（人工验收不替代自动化）」：cargo、<code>make -C contracts check</code>、<code>pnpm check:commit</code>、API 测试、e2e、<code>scan-secrets.sh</code> 逐项过——门禁挂了先修门禁，MUST NOT 进 UAT。</p>
+<p>报告纪律是一组通用规约：只记失败 &#x2F; 用例失效先修后重跑 &#x2F; 阻塞即终止 &#x2F; 不修复不归因。通过项不逐条记，按章节记「通过 N&#x2F;N」；被测代码 MUST NOT 现场修，失败原因 MUST NOT 现场分析——验收和分析是两个角色，混在一起两边都做不好。复验 MUST 就地更新该轮原报告，MUST NOT 为复验新建文件；规格和手册也 MUST NOT 链接具体报告，关键发现回流 TODOS 或相关规格。报告和执行计划是同一个生命周期哲学：过程性文件，用完即走。实测列回填的是真实观测值——hetuos v0.8 全量轮报告里那一格是「✅ 12 期间，2026-01~2026-12，2 月 28 天」（「期间」即月度会计期间）。</p>
+<p>什么时候跑全量 UAT 不靠记性，靠 <code>PLANS.md</code> 里的「全量 UAT 触发点」显式约定。hetu-creative 的编排比 hetuos 多出两章，把场景间的时序依赖做成了设计：S9 是综合业务流「毕业考试」，用一个新建的空白课程贯穿全流程（从新建到出成片），前置是 S2 到 S5 全部通过，再加上 S7 真实档；S10 数据导出压轴，runbook 里的理由原文——「导出包是全部业务域的聚合快照……越晚执行覆盖面越完整；S9 产生的构建制品正好作为 S5 域的对账素材」。</p>
+<h2 id="contracts-：一个目录，四个真相源"><a href="#contracts-：一个目录，四个真相源" class="headerlink" title="contracts&#x2F;：一个目录，四个真相源"></a>contracts&#x2F;：一个目录，四个真相源</h2><p>「契约先于实现」要能落地，契约得先有个固定的家。两个仓库都把契约性资产集中进 <code>contracts/</code>，它本身还是 pnpm workspace 的成员——fixtures 与种子定义以 workspace 包被测试直接 import，零构建中间层。</p>
+<p>hetuos 的 <code>contracts/</code> 按职责分子目录：<code>protos/</code>（60 个 proto、11,823 行，按「系统 &#x2F; 领域 &#x2F; v1」分目录）、<code>schemas/</code>（纯 DDL，按库一文件）、<code>seed-definitions/</code>（种子的 TS 真相源）、<code>entities/</code>（内置实体声明）、<code>fixtures/</code>（测试数据）。目录里那份 143 行的 AGENTS.md 用一张数据流图把生成方向写死：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">seed-definitions/*.ts ──(生成脚本)──→ seeds/*.sql</span><br><span class="line">entities/**.json ──(EntityDefinition 编译器)──→ schemas/*.sql 的 GENERATED 段</span><br><span class="line">fixtures/*.ts ─────────────────────→ tests/ import</span><br></pre></td></tr></table></figure>
+
+<p>真相源到生成物单向流动，「改哪边」不靠自觉靠 gate：<code>make check</code> 聚合六个检查脚本，<code>check-seed-codegen.sh</code> 的做法是「先备份 → 重新生成 → 与备份比对 → 不一致则恢复备份并报错，工作树保持干净」；<code>check-entity-codegen.sh</code> 的头注释把动机说透：「分叉在建库那一刻是静默的——表建出来了，只是不是声明的那张。本 gate 把『记得重新生成』从人工纪律变成 CI 判定」。</p>
+<p>贯通 Rust 与 TypeScript 两端的生成链只有一个中间产物：<code>buf build</code> 出的 <code>descriptor-set.bin</code>（约 788 KB）。全仓十余个 bin &#x2F; crate 的 <code>build.rs</code> 直接引用它做 ConnectRPC 代码生成，TS 侧的 protoc-gen-es 也从同一份 descriptor 生成——proto 改完，两端从同一份二进制重新长出来，没有哪端能「忘了」。这也是 <code>contracts/AGENTS.md</code> 里那条顺序陷阱的来源：proto 变更后 MUST 重建所有消费它的 bin，只重建单个，跨 bin 的 wire 类型错配要到运行时才爆。</p>
+<p>目录级规则细到 RLS 策略命名：只允许 <code>scope_select</code> &#x2F; <code>scope_insert</code> &#x2F; <code>scope_update</code> &#x2F; <code>scope_delete</code> &#x2F; <code>scope_isolation</code> 五个名字，理由是「跨表 grep <code>CREATE POLICY scope_*</code> 一次定位全仓 RLS 策略」。规则本身单点维护在 <code>contracts/AGENTS.md</code>，一个目录只留一份规则载体——两处并存必然漂移。</p>
+<p>hetu-creative 的 <code>contracts/</code> 是同一范式的裁剪：只剩 <code>protos/</code> 和 <code>sql/</code>。<code>sql/</code> 用数字前缀编排生命周期：<code>00-roles.sql</code> 建非超级用户角色，<code>01-schema.sql</code> 全量 DDL，<code>02-seed.sql</code> 开发种子，03 起是上线后的增量（AI 用量审计表、模型价格、存量回填），Docker initdb 按文件名序自动装载——文件名即装载顺序。迁移历史也有交代：一份 <code>MIGRATION-DIFF.md</code> 给从 TypeSpec 迁到 proto 的全部语义调整记账（2,668 行 TypeSpec 对 17 个 proto 文件、99 个 rpc；teacher → creator 全栈改名、SSE 流改同步 unary，逐条入账）。对照之下，hetuos 的 <code>migrations/</code> 目录刻意为空，README 写明首版上线前结构变更直接改 <code>schemas/</code>、「schema 变更无迁移路径，只能重建库」——空目录是登记过的刻意状态，不是忘了建。</p>
+<h2 id="测试栈：打真实栈，不打桩"><a href="#测试栈：打真实栈，不打桩" class="headerlink" title="测试栈：打真实栈，不打桩"></a>测试栈：打真实栈，不打桩</h2><p>API 测试的定位写在 <code>tests/AGENTS.md</code> 第一行：「Vitest + ConnectRPC TS client，跑真实 bin &#x2F; 真实 DB，验证后端遵守 proto 契约」。没有 mock 层：测试用种子账号走真实登录换会话凭证，明文禁止在 TS 端自构 token；连 LLM 都不打桩，builder 域以 <code>HETU_BUILDER_LLM_MODE=replay</code> 回放录好的应答，确定、可重复、不花钱。globalSetup 把「起一套被测栈」整段自动化：幂等拉 e2e 数据库容器 → 全新 schema + 种子 → <code>cargo build</code> 七个 bin → 依次拉起到 e2e 端口段 → 逐个轮询 <code>/health</code> → 跑 suite → teardown。</p>
+<p>隔离靠端口分段和容器分段双保险：hetuos 的 dev 占 59081-59087 &#x2F; DB 55432，e2e 占 39081-39087 &#x2F; DB 55435，各自独立容器独立卷，reset 脚本互相「绝不碰对方容器」。这些数字不是拍脑袋，是事故喂出来的——hetu-creative 的 e2e 隔离注释里第一条就是真实事故：dev 的 task worker 进程会把 e2e 入队的任务认领走，两边抢活，测试永远等不到自己的任务。hetuos 的 e2e 端口段还留了覆写口，理由写在注释里：39081-39085 落在 Linux 内核临时端口区间（<code>ip_local_port_range</code> 通常 32768-60999），任何本机进程的出站连接都可能先占住其中一个，bind 随即 EADDRINUSE——实证是本机一条 PostgreSQL 连接把 39084 当源端口占了。</p>
+<p>执行强制串行：<code>fileParallelism: false</code>，配置里给的理由是「单一后端 + 共享 PostgreSQL 实例——文件级并行会导致跨 suite 互相干扰」。</p>
+<p>为 AI 协作做的适配藏在 <code>run-tests.sh</code>：全量跑「30+ suite &#x2F; 500+ 用例」时管道截断会丢失败列表，脚本把全量输出落盘 <code>tests/.test-logs/</code>，结束只打摘要和 FAIL 清单；排查纪律是 MUST 用 grep &#x2F; tail 读日志文件，「避免一次性点满 LLM 上下文」。测试基础设施开始把「AI 读日志」当一等消费场景来设计——传统工程里不存在这个需求，AI 协作编程里天天发生。</p>
+<p>还有一个模式把测试、部署和 UAT 串了起来：external 模式。同一套 suite 加 <code>--env staging</code> 直接打已部署的 staging 栈，起栈的 globalSetup 整段跳过，只切连接目标。hetu-creative 的 staging UAT 报告里「api-tests –env staging 17 passed」跑的就是平时那套测试——验收报告里的自动化证据和日常回归，不再是两套东西。external 模式的边界也被登记：有 suite 的数据准备直连 e2e 库而断言打 staging，两库错位必挂，于是它在 external 模式下显式 skip，口径写进文档而不是留给执行者踩坑。</p>
+<p>hetu-creative 起步时只有 4 个 suite，但做了一个 hetuos 甘愿付固定开销也没做的优化：把不打 RPC 的纯逻辑测试拆进独立的 <code>vitest.config.env.ts</code>——无 globalSetup、允许并行——不为一次「起容器 + 三个 bin」的固定开销买单；hetuos 对同类纯逻辑 suite 的态度记在 AGENTS.md 里：照付一次 globalSetup 代价。</p>
+<h2 id="部署与脚本：运维知识的归宿"><a href="#部署与脚本：运维知识的归宿" class="headerlink" title="部署与脚本：运维知识的归宿"></a>部署与脚本：运维知识的归宿</h2><p>第一原则的准入清单里有一类「运维知识：部署形态、环境差异、故障信号与处置——代码里根本不存在这些事实」，<code>deploy/</code> 就是这一行的落地。hetu-creative 的 <code>deploy/README.md</code> 开头定位与准入清单严丝合缝：「本目录是部署形态的真相源：Dockerfile &#x2F; docker-compose &#x2F; systemd unit &#x2F; nginx.conf 即现行事实，本文只承载代码无法表达的环境差异、装配口径、降级行为与故障信号」。</p>
+<p>最有代表性的是那张原生运行时依赖矩阵。task-worker 的构建管线（PPTX → PDF → PNG → 视频合成）依赖 libpdfium、libreoffice、ffmpeg，每种登记三件事：版本锁定口径（libpdfium MUST 用 chromium&#x2F;7543，与 <code>pdfium-render</code> 0.8 的绑定版本锁定，防 ABI 漂移）、装配方式、<strong>缺它时的降级行为</strong>——「PDF→PNG 跳过 → build job 不产 slide PNG &#x2F; cover，但 PPTX&#x2F;MP3&#x2F;PDF 产物仍正常」。把「缺 X 时系统什么行为」写成矩阵，故障处置从考古变成查表，配套还有一节「信号 → 根因 → 处置」。</p>
+<p>hetuos 的裸机部署则示范了部署本身也被 gate 管着。两阶段纪律：先以普通用户构建，再以 root 安装——sudo 的 secure_path 会剥掉 cargo &#x2F; pnpm，root 构建还会污染 <code>target/</code>。配置模板的占位符分两种形态：<code>__MARKER__</code> 给渲染器自动替换，<code>CHANGE_ME</code> 留给人工填写，形态写错没人提醒，于是 <code>preflight.sh</code> 把部署后残留的两种占位符一律判 FAIL。这道 fail-closed 门禁的职责写在头注释里：缺二进制、缺配置、缺用户、缺证书时，部署停下来，而不是带起半个栈。preflight &#x2F; verify &#x2F; verify-tls 三道门禁全过，一次部署才算完。</p>
+<p>secrets 单独立规：真实凭证整目录 gitignore、权限 0600，「凭证一旦疑似暴露 MUST 走 provider 控制台轮换，代码 &#x2F; 权限修复不能替代轮换」；<code>scan-secrets.sh</code> 作为发版门禁扫五类泄漏，输出刻意收敛——只报 file:line，永不回显命中的密钥内容。</p>
+<p>最后是 <code>scripts/</code>。这个目录表面是工具箱，实际是文档体系的一部分：几乎每个脚本的头注释都在写「代码无法表达的内容」。reset-db 类脚本的注释里写着「不能只等 pg_isready，要等 users 表出现（02-seed 装载完成的标志），最长 60s」——postmaster 起来不等于 schema 和种子装完；docker-compose 文件的注释里解释了为什么 MUST 有显式 project name：「同名 project 会让 compose 把对方的容器当作本 project 的旧容器替换掉（已实际发生过：误删 careos 的 hetu-dev-db）」。事故教训写进头注释，下一个人——或下一个 AI——动脚本之前会先读到它。hetu-creative 的每个脚本还注明与 hetuos 的对齐关系：「对齐 hylx-careos scripts&#x2F;reset-db.sh 范式，本仓单库 hetu_creative 故精简掉多库 &#x2F; identity 断言 &#x2F; seed manifest」——工程范式的跨仓复用不靠整目录复制，靠范式加显式登记的裁剪理由。</p>
+<p><code>scripts/</code> 里另有三个仓库级 gate，和后文的机械检查器是同一哲学在代码侧的延伸：<code>check-crate-layering.sh</code> 用 <code>cargo tree</code> 做依赖白名单判定（平台层 crate 的源码禁出现业务域概念、builder-core 禁依赖任何数据库 driver、bin 之间禁互依）；<code>check-leave-domain-redlines.sh</code> 守护护理业务的两条红线，其中「时限零硬编码」的扫描范围有个精致取舍——时间字面量只扫 <code>#[cfg(test)]</code> 之前的代码，理由原文：「一个『证明时限来自机构声明』的单测必须能写出那份声明里的秒数并断言算出的时点——否则这条纪律就只能靠『不写测试』来遵守，那是把 gate 变成反向激励」。</p>
+<h2 id="从-docs-sdd-到-sdd-skill"><a href="#从-docs-sdd-到-sdd-skill" class="headerlink" title="从 docs&#x2F;sdd&#x2F; 到 sdd skill"></a>从 docs&#x2F;sdd&#x2F; 到 sdd skill</h2><p>这套规范最初长在 hetuos 的 <code>docs/sdd/</code> 目录里，是项目内规范，天然带着前面第二个问题的隐患——规则锁在单个仓库里就无法复用，开第二个仓库时几乎要重写一遍。近期，我把它反向提炼成了一个项目中立的 skill——<code>sdd</code>，安装在 <code>.agents/skills/sdd/</code>。hetu-creative 这个新仓库从建仓第一天起就带着这个 skill 起步。两个仓库至今共用同一份 skill 本体，<code>diff -rq</code> 零差异，没有 fork，项目差异全部收敛在各自的 overlay 里。sdd skill 的安装方式见 <a target="_blank" rel="noopener" href="https://github.com/yangjing/skills/#-sdd">skills 仓库</a>。</p>
+<h2 id="sdd-skill-长什么样"><a href="#sdd-skill-长什么样" class="headerlink" title="sdd skill 长什么样"></a>sdd skill 长什么样</h2><p>目录结构：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">.agents/skills/sdd/</span><br><span class="line">├── SKILL.md              # 只做触发路由 + 执行协议，不复述任何条款</span><br><span class="line">├── references/           # 9 册通用规范，约 2800 行</span><br><span class="line">│   ├── SPECIFICATION.md        # 总纲：内容准入、契约先行、术语、兼容性、门禁</span><br><span class="line">│   ├── spec-driven-development.md  # Sprint 物料：契约包、生成链、迭代 checklist</span><br><span class="line">│   ├── design-philosophy.md    # 深模块、设计两次、YAGNI、注释准入</span><br><span class="line">│   ├── naming-conventions.md   # 三层命名、权限码、禁用词</span><br><span class="line">│   ├── backend-layering.md     # api/application/domain/infra 分层</span><br><span class="line">│   ├── frontend-conventions.md # route 职责、远程数据、金额日期渲染</span><br><span class="line">│   ├── i18n-conventions.md     # 命名空间、文案真相源、fallback</span><br><span class="line">│   ├── service-dependency-contract.md  # SoR、通信协议、信任模型</span><br><span class="line">│   └── sdd-overview.md         # 分册总览、overlay 边界、自审方法</span><br><span class="line">├── stacks/               # 技术栈适配层</span><br><span class="line">│   ├── protobuf-connectrpc.md</span><br><span class="line">│   ├── rust-postgres.md</span><br><span class="line">│   └── react-tanstack-antd.md</span><br><span class="line">├── templates/            # overlay / Feature Spec / 栈适配层骨架</span><br><span class="line">└── scripts/</span><br><span class="line">    └── check-spec-conformance.py  # 机械检查器，零第三方依赖</span><br></pre></td></tr></table></figure>
+
+<p>关键设计是 <code>SKILL.md</code> 只有 133 行，<strong>只做两件事：触发路由和执行协议，不复述任何条款</strong>。AI 命中场景时按路由表只加载对应分册的对应章节，明文禁止预读全部分册——这是 skill 的渐进披露（progressive disclosure）机制在规范加载上的直接应用：2800 行规范如果每次全量注入，既贵又钝。</p>
+<p>触发路由表长这样（节选）：</p>
+<table>
+<thead>
+<tr>
+<th>触发场景</th>
+<th>加载</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>写或评审任何文档</td>
+<td>SPECIFICATION §1.0 内容准入——第一项，不过即删</td>
+</tr>
+<tr>
+<td>设计或变更 Contract Surface（API &#x2F; 事件 &#x2F; Schema &#x2F; 权限码 &#x2F; 错误码）</td>
+<td>SPECIFICATION §4 + §7</td>
+</tr>
+<tr>
+<td>一个域该有多少 RPC &#x2F; 能否合并 &#x2F; 粒度下限</td>
+<td>SPECIFICATION §7.5</td>
+</tr>
+<tr>
+<td>评审模块设计 &#x2F; 判定是否重构 &#x2F; PR 判断代码质量</td>
+<td>design-philosophy</td>
+</tr>
+<tr>
+<td>是否加抽象 &#x2F; 新依赖 &#x2F; 重写、MVP 范围裁剪</td>
+<td>design-philosophy §14</td>
+</tr>
+<tr>
+<td>handler 里写 SQL、字段类型该落哪层</td>
+<td>backend-layering</td>
+</tr>
+<tr>
+<td>前端 route &#x2F; Provider &#x2F; 远程数据 &#x2F; 金额渲染</td>
+<td>frontend-conventions</td>
+</tr>
+</tbody></table>
+<p>值得注意的是触发词的粒度。路由表覆盖的不只是「写规格文档」这种显式场景，还包括「这字段该叫什么」「这模块该不该拆」「这段要不要写进文档」——AI 嘴上没提 SDD，只要动作命中场景，规范就得加载。否则规范只在一个仪式性的「写文档时刻」被想起，其余时间形同虚设。</p>
+<p>执行协议固定六段：Trigger（何时必须加载）、Load（先读什么、禁止读什么）、Apply（冲突时以谁为准）、Conflict&#x2F;Stop（什么情况必须停下来报告、禁止自行取舍）、Output（交付说明必须点名依据的章节号和证据形态）、MUST NOT（禁止的捷径）。每份分册的开头也有自己的六段协议。这个格式不是给 reviewer 看的排版偏好，而是让规则对 AI 可执行的最小骨架——少了 Conflict&#x2F;Stop 段，AI 遇到规范与代码冲突时会自己拍板；少了 Output 段，「我已按规范执行」就变成无法核验的自述。</p>
+<h2 id="三层内容模型：规则、形态、取值分开"><a href="#三层内容模型：规则、形态、取值分开" class="headerlink" title="三层内容模型：规则、形态、取值分开"></a>三层内容模型：规则、形态、取值分开</h2><p>skill 解决「第二个仓库怎么办」的办法，是把所有内容按<strong>变化源</strong>切成三层：</p>
+<table>
+<thead>
+<tr>
+<th>层</th>
+<th>收什么</th>
+<th>变化源</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>references/</code></td>
+<td>换栈、换项目都不变的规则</td>
+<td>方法论演进</td>
+</tr>
+<tr>
+<td><code>stacks/</code></td>
+<td>换项目不变、换栈就变的落地形态（类型映射、框架 API、生成链）</td>
+<td>技术选型</td>
+</tr>
+<tr>
+<td>项目 overlay</td>
+<td>换项目一定变的取值（路径、包名、词表、命令、迁移策略）</td>
+<td>项目决策</td>
+</tr>
+</tbody></table>
+<p>判断归属就靠两个问句，先问栈、再问项目：换掉技术栈还成立吗？成立 → <code>references/</code>；不成立，再问：这条规则在另一个用同样技术栈的项目里还成立吗？成立 → <code>stacks/</code>，不成立 → 项目 overlay。</p>
+<p>典型误判是把「所有 id 主键 MUST 是 UUID 或 BIGINT」放进 <code>stacks/</code>——它换栈依然成立，属于 <code>references/</code>。反过来的误判更常见：把仓库路径、make target、专属权限码写进通用规范，下一个项目就整册报废。</p>
+<p>每个仓库用一个 <code>sdd.overlay.md</code> 登记自己的取值，只登记通用规范禁写的那些内容。hetuos 的 overlay 里是这样的表：</p>
+<table>
+<thead>
+<tr>
+<th>类别</th>
+<th>本仓路径</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>契约根目录（proto + schema&#x2F;seeds + fixtures）</td>
+<td><code>contracts/</code></td>
+</tr>
+<tr>
+<td>规格根目录</td>
+<td><code>docs/specs/</code></td>
+</tr>
+<tr>
+<td>后端进程单元 ↔ 共享库</td>
+<td><code>bins/</code> ↔ <code>crates/</code></td>
+</tr>
+<tr>
+<td>契约全量检查</td>
+<td><code>make -C contracts check</code></td>
+</tr>
+<tr>
+<td>兼容性阶段</td>
+<td>未发布 1.0，内部契约字段编号 MAY 放宽</td>
+</tr>
+</tbody></table>
+<p>而 hetu-creative 的 overlay 里，同一张表登记的是另一个世界：规格根目录一栏写的是「未设立（本仓当前无功能&#x2F;系统规格文档）」，边界信任模型一栏写的是「未裁决（TODO：触发该强制条款时，先落 ADR 再实施）」。同一份 skill，两个仓库各自如实登记自己的现状——包括「还没有」这件事本身。</p>
+<p>配套还有一条命名纪律：扩展某份通用分册的项目文档必须叫 <code>&lt;对应文件名&gt;.overlay.md</code>（如 <code>naming-conventions.overlay.md</code>），没有对应通用分册的项目文档禁止加 <code>.overlay</code> 后缀。这样「通用规范 ↔ 项目扩展」的配对关系统一由文件名承担，人和 AI 都不用猜。</p>
+<h2 id="机械检查器：把规则变成-gate"><a href="#机械检查器：把规则变成-gate" class="headerlink" title="机械检查器：把规则变成 gate"></a>机械检查器：把规则变成 gate</h2><p>规范写得再好，靠 AI 自觉遵守总归是软约束。skill 自带一个 562 行的检查器 <code>check-spec-conformance.py</code>，脚本本身零第三方 Python 依赖，以 PEP 723 自包含形态交付，检出五类机械可判定的违规。运行时需要 <a target="_blank" rel="noopener" href="https://docs.astral.sh/uv/">uv</a> 来管理 Python 环境与依赖——规范检查是门禁，门禁不该因为装不上包而失效，而 uv 让这件事足够轻量：</p>
+<table>
+<thead>
+<tr>
+<th>检查项</th>
+<th>违规形态</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>C1</td>
+<td><code>path:line</code> 行号锚点——行号随重构漂移，会把审计指向错误代码</td>
+</tr>
+<tr>
+<td>C2</td>
+<td>Agent 执行协议缺段——六段骨架不完整</td>
+</tr>
+<tr>
+<td>C3</td>
+<td>BCP 14 关键词小写——“must” 只是叙述不是规范</td>
+</tr>
+<tr>
+<td>C4</td>
+<td><code>.overlay.md</code> 命名违规</td>
+</tr>
+<tr>
+<td>C5</td>
+<td>文档头缺 Status &#x2F; Version 控制字段</td>
+</tr>
+</tbody></table>
+<p>用法：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 扫 skill 自身</span></span><br><span class="line">uv run .agents/skills/sdd/scripts/check-spec-conformance.py</span><br><span class="line"></span><br><span class="line"><span class="comment"># 扫仓库规格文档</span></span><br><span class="line">SDD_SCAN_ROOTS=<span class="string">&#x27;docs/designs,docs/specs&#x27;</span> \</span><br><span class="line">  uv run .agents/skills/sdd/scripts/check-spec-conformance.py</span><br></pre></td></tr></table></figure>
+
+<p>在 hetuos，这道检查被串进了提交前总门禁，与 lint、type-check 平级：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">check:commit = format → lint → type-check → 领域红线 → check:docs</span><br><span class="line">                                                    ├─ 链接与锚点校验</span><br><span class="line">                                                    ├─ 行号锚点 C1（扩到 Agent 规则文档链）</span><br><span class="line">                                                    └─ 规范符合性 C1-C5</span><br></pre></td></tr></table></figure>
+
+<p>C1 值得单独说：它约束的是引用形态而非文档体裁，所以扫描面特意扩到根 <code>AGENTS.md</code>、<code>apps/*/AGENTS.md</code> 这条 Agent 规则文档链——这些文件由 harness 按目录注入、AI 直接照其执行，行号漂移的代价与规格文档等同。</p>
+<p>扫描面治理则体现了另一层判断力：执行计划、运营跟踪、UAT 执行记录、对外文稿一律<strong>不纳入</strong>扫描面。理由写在脚本 docstring 里：英文对外邮件里的 “must” 是普通英语不是 BCP 14，执行计划也不承担文档控制字段义务，把它们纳进来只会产出满屏假阳性——<strong>而会误报的 gate 最终会被绕过</strong>。宁可少管，不可错管；一个被团队绕过的门禁比没有门禁更糟，因为它还提供着虚假的安全感。</p>
+<h2 id="同一个-skill，两种形状"><a href="#同一个-skill，两种形状" class="headerlink" title="同一个 skill，两种形状"></a>同一个 skill，两种形状</h2><p>回到最初的问题：第二个仓库怎么办。答案是 hetu-creative 没有复制 hetuos 的文档体系，而是用同一份 skill 长出了完全不同的形状：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>hetuos（多业务线平台仓）</th>
+<th>hetu-creative（单产品仓）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>specs 根目录</td>
+<td><code>docs/specs/</code>，5 条业务线的功能规格 + BDD</td>
+<td>未设立</td>
+</tr>
+<tr>
+<td>ADR</td>
+<td>13 篇</td>
+<td>无目录，overlay 登记「未裁决，触发时先补建」</td>
+</tr>
+<tr>
+<td>权限码真相源</td>
+<td><code>designs/naming-conventions.overlay.md</code> 文档</td>
+<td><code>contracts/sql/02-seed.sql</code> 的 INSERT 行</td>
+</tr>
+<tr>
+<td>提案体裁</td>
+<td>2 份讨论草稿</td>
+<td>8 篇结构化产品提案 + 竞品调研</td>
+</tr>
+<tr>
+<td>designs 文档</td>
+<td>23 份</td>
+<td>3 份（都是「代码读不出的为什么」）</td>
+</tr>
+<tr>
+<td>contracts 组织</td>
+<td>八个职责子目录（protos &#x2F; schemas &#x2F; seeds &#x2F; entities &#x2F; fixtures…）</td>
+<td><code>protos/</code> + 数字前缀 <code>sql/</code></td>
+</tr>
+<tr>
+<td>测试栈</td>
+<td>48 个 API suite + e2e 两档 20 例</td>
+<td>4 个 suite 起步 + external 模式直打 staging</td>
+</tr>
+<tr>
+<td>部署主形态</td>
+<td>裸机 systemd，七个 bin 多库，docker 仅冒烟</td>
+<td>docker-compose（dev）+ systemd（生产）+ 降级矩阵</td>
+</tr>
+<tr>
+<td>skill 本体</td>
+<td><code>.agents/skills/sdd/</code></td>
+<td>完全相同，diff -rq 零差异</td>
+</tr>
+</tbody></table>
+<p>差异不是随意长出来的，每个选择都有判据。hetu-creative 是单一产品，产品范围由 <code>DESIGN.md</code> 和 proto 契约承载，再立一套 specs 树就是制造第二个真相源；权限码总共二十几个，SQL seed 里的 INSERT 行天然就是权威数据，再写一份文档清单反而要维护两处同步。规范里「每个系统 MUST 用独立子目录放规格」这类条款对它是空转，它就诚实地在 overlay 里登记「未设立」，而不是为了合规硬造一批空壳规格。</p>
+<p>反过来，hetu-creative 把精力花在了 hetuos 没有的体裁上：<code>docs/proposals/</code> 里的产品提案。最有代表性的是那份全景分析——先用三路代码盘点（16 proto &#x2F; 21 service &#x2F; 95 rpc 全量核对实现状态、前后端逐页核对、UAT 记录核对），再叠加三路联网调研（19 家 AI 课程竞品、20+ 家数字人&#x2F;TTS 竞品），得出第一条判断：</p>
+<blockquote>
+<p>最大缺口在「完成度」而非「新想法」：南北向 77 个 rpc 前端仅接线 25 个（约 32%）——构建管线（发起&#x2F;进度&#x2F;重试&#x2F;取消&#x2F;制品审阅下载）前端零入口，而后端 build DAG 在首 stage 后断链。「构建」是核心卖点，当前用户却无处可点、链路也无产出。</p>
+</blockquote>
+<p>「77 个 rpc 接线 25 个」这种数字能写进提案，前提是规格与契约体系让「完成度」变成可清点的事实。这也是这套规范的一个副产品：它不光约束怎么写代码，还让仓库的当前状态始终是可测量的。</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>两个仓库，一份 skill，零 fork。hetuos 四个月 832 个 commit、664 份文档（其中 224 个 commit 以 docs 开头，文档与代码同节奏演进）；hetu-creative 五个月 1656 个 commit，跑完了「迁移 → 两轮全量 UAT → 提案立项 → 逐计划闭环归档」的完整循环，<code>archived/</code> 清空了 334 份已回流计划。</p>
+<p>回头看，这套东西真正立住的是三条原则，它们对人、对 AI 同样成立：</p>
+<ol>
+<li><strong>契约先于实现</strong>——先写实现再补契约，契约就退化为实现的描述，失去约束力；</li>
+<li><strong>文档只写代码无法表达的内容</strong>——过不了「删掉它，只读代码的人会失去什么」这一问的内容，写得再规范也是负债；</li>
+<li><strong>规则必须可验证</strong>——每条验收有 Verification Oracle（可追踪、可重复的权威判定机制），只能由人判断的，显式标记为 Human Approval Gate（人工审批门），机械可判定的交给脚本，会误报的 gate 宁可不设。</li>
+</ol>
+<p>而把它做成 skill 而不是一份长文档的意义在于：规范被拆成了「路由 → 按需加载的条款 → 栈适配 → 项目取值」四层，AI 只在命中场景时读它需要的那几节，新仓库用一个 overlay 就能继承全部方法论沉淀。规范不再是那份每次会话全量注入、越来越没人读的 AGENTS.md，而是可以被触发、被执行、被检查的活规则。</p>
+
+        </div>
+        <footer class="article-footer">
+            
+
+
+
+    <a data-url="https://yangjing.github.io/2026/08/15/%E6%88%91%E7%9A%84-SDD-%E5%AE%9E%E8%B7%B5%E5%92%8C-sdd-skill/" data-id="cmsu0f8a300ztjj9kb5b4fqtc" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+<script>
+    (function ($) {
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+        </footer>
+    </div>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "author": {
+            "@type": "Person",
+            "name": "杨景"
+        },
+        "headline": "我的 SDD 实践和 sdd skill",
+        "image": "https://yangjing.github.io",
+        "keywords": "claude-code skill AI 编程 spec-driven-development 软件工程",
+        "genre": "工程实践",
+        "datePublished": "2026-08-15",
+        "dateCreated": "2026-08-15",
+        "dateModified": "2026-08-15",
+        "url": "https://yangjing.github.io/2026/08/15/我的-SDD-实践和-sdd-skill/",
+        "description": "过去半年，我全程用 AI 编程智能体（Claude Code &#x2F; zcode）开发了两个产品：hetuos 是多业务线的 AI 应用平台，hetu-creative 是面向创作者的 AI 课程创作产品。两个仓库共用同一套技术栈：后端 Rust + PostgreSQL，契约 Protobuf + ConnectRPC，前端 React 19 + TanStack Router&#x2F;",
+        "wordCount": 1943
+    }
+</script>
+
+</article>
+
+    <section id="comments">
+    
+    </section>
+
+
+
+                        </div>
+                    </section>
+                    <aside id="sidebar">
+    <a class="sidebar-toggle" title="Expand Sidebar"><i class="toggle icon"></i></a>
+    <div class="sidebar-top">
+        <p>关注我 :</p>
+        <ul class="social-links">
+            
+                
+                <li>
+                    <a class="social-tooltip" title="github" href="https://github.com/yangjing" target="_blank" rel="noopener">
+                        <i class="icon fa fa-github"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="twitter" href="https://twitter.com/yangbajing1" target="_blank" rel="noopener">
+                        <i class="icon fa fa-twitter"></i>
+                    </a>
+                </li>
+                
+            
+        </ul>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+    
+        <a href="/2026/08/13/%E4%BA%BA%E6%98%AF%E5%BE%AA%E7%8E%AF/" id="article-nav-older" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">上一篇</strong>
+        <p class="article-nav-title">人是循环</p>
+        <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
+        </a>
+    
+</nav>
+
+    
+    <div class="widgets-container">
+        
+            
+                
+
+            
+                
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="no-thumbnail">
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5/">工程实践</a></p>
+                            <p class="item-title"><a href="/2026/08/15/%E6%88%91%E7%9A%84-SDD-%E5%AE%9E%E8%B7%B5%E5%92%8C-sdd-skill/" class="title">我的 SDD 实践和 sdd skill</a></p>
+                            <p class="item-date"><time datetime="2026-08-15T02:00:00.000Z" itemprop="datePublished">2026-08-15</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"></p>
+                            <p class="item-title"><a href="/2026/08/13/%E4%BA%BA%E6%98%AF%E5%BE%AA%E7%8E%AF/" class="title">人是循环</a></p>
+                            <p class="item-date"><time datetime="2026-08-13T09:27:17.000Z" itemprop="datePublished">2026-08-13</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/ai/">ai</a></p>
+                            <p class="item-title"><a href="/2026/07/30/epub-%E7%94%B5%E5%AD%90%E4%B9%A6%E9%98%85%E8%AF%BB%E4%B8%8E%E7%BF%BB%E8%AF%91-skill/" class="title">写了两款 Agent Skills：电子书阅读与翻译</a></p>
+                            <p class="item-date"><time datetime="2026-07-30T00:45:28.000Z" itemprop="datePublished">2026-07-30</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/work/">work</a></p>
+                            <p class="item-title"><a href="/2026/04/03/ai-coding-tmux-guide/" class="title">AI 编程与 tmux 实践</a></p>
+                            <p class="item-date"><time datetime="2026-04-03T06:30:00.000Z" itemprop="datePublished">2026-04-03</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/ai/">ai</a></p>
+                            <p class="item-title"><a href="/2025/08/22/AI-%E5%8D%8F%E4%BD%9C%E7%BC%96%E7%A8%8B-SOP%EF%BC%9A%E6%9E%B6%E6%9E%84%E5%B8%88%E9%A9%B1%E5%8A%A8-%E7%BB%93%E5%AF%B9%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%BC%8F/" class="title">AI 编程 SOP：架构师驱动 + 结对编程模式</a></p>
+                            <p class="item-date"><time datetime="2025-08-22T09:36:18.000Z" itemprop="datePublished">2025-08-22</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ai/">ai</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/c-c/">c/c++</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/data/">data</a><span class="category-list-count">25</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/data/ambari-hdp/">ambari/hdp</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/data/cassandra/">cassandra</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/data/elasticsearch/">elasticsearch</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/data/flink/">flink</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/data/greenplum/">greenplum</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/data/postgresql/">postgresql</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/data/pulsar/">pulsar</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/data/spark/">spark</a><span class="category-list-count">4</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/essay/">essay</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/programming/">programming</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/rust/">rust</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/scala/">scala</a><span class="category-list-count">43</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/scala/akka/">akka</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/scala/learning-scala/">learning scala</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/scala/scala%E5%AE%9E%E6%88%98/">scala实战</a><span class="category-list-count">4</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/unix-linux/">unix/linux</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/work/">work</a><span class="category-list-count">21</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BD%9C%E5%93%81/">作品</a><span class="category-list-count">5</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BD%9C%E5%93%81/akka-cookbook/">akka-cookbook</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BD%9C%E5%93%81/akka-http-chinese/">akka-http-chinese</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BD%9C%E5%93%81/lecture/">lecture</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BD%9C%E5%93%81/nacos-sdk-scala/">nacos-sdk-scala</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BD%9C%E5%93%81/scala-web-development/">scala-web-development</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5/">工程实践</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/08/">八月 2026</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/07/">七月 2026</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/04/">四月 2026</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/08/">八月 2025</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/07/">七月 2025</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/02/">二月 2025</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/12/">十二月 2024</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/10/">十月 2024</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/09/">九月 2024</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/08/">八月 2024</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/07/">七月 2024</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/06/">六月 2024</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/04/">四月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">九月 2021</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">十一月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">九月 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">八月 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">六月 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">三月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">十二月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">九月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/05/">五月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/02/">二月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/01/">一月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/02/">二月 2012</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/10/">十月 2011</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/09/">九月 2011</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2010/10/">十月 2010</a><span class="archive-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">标签</h3>
+        <div class="widget">
+            <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/2025/" rel="tag">2025</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/4a/" rel="tag">4a</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AI-%E7%BC%96%E7%A8%8B/" rel="tag">AI 编程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DDD/" rel="tag">DDD</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Go/" rel="tag">Go</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Node/" rel="tag">Node</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/" rel="tag">Python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scala/" rel="tag">Scala</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sphinx-%E6%92%B0%E5%86%99-%E7%94%B5%E5%AD%90%E6%96%87%E6%A1%A3/" rel="tag">Sphinx 撰写 电子文档</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/about/" rel="tag">about</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/access-token/" rel="tag">access_token</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/accesstoken/" rel="tag">accesstoken</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/activemq/" rel="tag">activemq</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ai/" rel="tag">ai</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka/" rel="tag">akka</a><span class="tag-list-count">29</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka-http/" rel="tag">akka http</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka-2-6/" rel="tag">akka-2.6</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka-cluster/" rel="tag">akka-cluster</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka-cluster-sharding/" rel="tag">akka-cluster-sharding</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka-cookbook/" rel="tag">akka-cookbook</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka-grpc/" rel="tag">akka-grpc</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka-http/" rel="tag">akka-http</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka-http-chinese/" rel="tag">akka-http-chinese</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka-http-testkit/" rel="tag">akka-http-testkit</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka-log/" rel="tag">akka-log</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka-persistence/" rel="tag">akka-persistence</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka-stream/" rel="tag">akka-stream</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka-streams/" rel="tag">akka-streams</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka-typed/" rel="tag">akka-typed</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/akka%E5%AE%9E%E6%88%98/" rel="tag">akka实战</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alpakka/" rel="tag">alpakka</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alpakka-kafka/" rel="tag">alpakka-kafka</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ambari/" rel="tag">ambari</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/api/" rel="tag">api</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/api-design/" rel="tag">api-design</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/at-least-once-delivery/" rel="tag">at-least-once-delivery</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/axum/" rel="tag">axum</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bash/" rel="tag">bash</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/batch-insert/" rel="tag">batch-insert</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/book/" rel="tag">book</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/" rel="tag">c</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/" rel="tag">c++</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cassandra/" rel="tag">cassandra</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdc/" rel="tag">cdc</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/centos/" rel="tag">centos</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/centos7/" rel="tag">centos7</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/clap/" rel="tag">clap</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/claude-code/" rel="tag">claude-code</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cluster/" rel="tag">cluster</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cluster-distributedata/" rel="tag">cluster-distributedata</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cluster-sharding/" rel="tag">cluster-sharding</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cluster-singleton/" rel="tag">cluster-singleton</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/codex/" rel="tag">codex</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/collection/" rel="tag">collection</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/config/" rel="tag">config</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/coordinated-shutdown/" rel="tag">coordinated-shutdown</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cqrs/" rel="tag">cqrs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/crawl4ai/" rel="tag">crawl4ai</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/crawler/" rel="tag">crawler</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/debezium/" rel="tag">debezium</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/deepseek/" rel="tag">deepseek</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/deepseek-r1/" rel="tag">deepseek-r1</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/design-pattern/" rel="tag">design-pattern</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/devops/" rel="tag">devops</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/distribution/" rel="tag">distribution</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/earth2studio/" rel="tag">earth2studio</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ebook/" rel="tag">ebook</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/eclipse/" rel="tag">eclipse</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/either/" rel="tag">either</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elasticsearch/" rel="tag">elasticsearch</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elt/" rel="tag">elt</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/email/" rel="tag">email</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/enum/" rel="tag">enum</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/epub/" rel="tag">epub</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/essay/" rel="tag">essay</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/etl/" rel="tag">etl</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/event-sourced/" rel="tag">event-sourced</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/exactly-once/" rel="tag">exactly-once</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/firewall/" rel="tag">firewall</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/" rel="tag">flink</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/functional/" rel="tag">functional</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/functions/" rel="tag">functions</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/fusion-log/" rel="tag">fusion-log</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/future/" rel="tag">future</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gatling/" rel="tag">gatling</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gitlab/" rel="tag">gitlab</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gradle/" rel="tag">gradle</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/greenplum/" rel="tag">greenplum</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grpc/" rel="tag">grpc</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grpc-rust-tonic-prost-protobuf/" rel="tag">grpc, rust, tonic, prost, protobuf</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grpc-web-tonic-nice-grpc-rust-nextjs/" rel="tag">grpc-web, tonic, nice-grpc, rust, nextjs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hadoop/" rel="tag">hadoop</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hanlp/" rel="tag">hanlp</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hdp/" rel="tag">hdp</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/" rel="tag">hive</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/html5/" rel="tag">html5</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http-2/" rel="tag">http-2</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/https/" rel="tag">https</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/huggingface/" rel="tag">huggingface</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/idea/" rel="tag">idea</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jackson/" rel="tag">jackson</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jackson-module-scala/" rel="tag">jackson-module-scala</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jdbc/" rel="tag">jdbc</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jenkins/" rel="tag">jenkins</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jenkins-pipeline/" rel="tag">jenkins-pipeline</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jenkinsfile/" rel="tag">jenkinsfile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jquery/" rel="tag">jquery</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/json/" rel="tag">json</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/json4s/" rel="tag">json4s</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/" rel="tag">kafka</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kimi-code/" rel="tag">kimi-code</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kind/" rel="tag">kind</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/liftweb/" rel="tag">liftweb</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/llama-cpp/" rel="tag">llama.cpp</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/llm/" rel="tag">llm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/log/" rel="tag">log</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/logical-replication/" rel="tag">logical replication</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/logrotate/" rel="tag">logrotate</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mac/" rel="tag">mac</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/macros/" rel="tag">macros</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mass-data/" rel="tag">mass-data</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mass-rdi/" rel="tag">mass-rdi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/" rel="tag">maven</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/milvus/" rel="tag">milvus</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mybatis/" rel="tag">mybatis</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mybatis-plus/" rel="tag">mybatis-plus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nacos/" rel="tag">nacos</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neokylin/" rel="tag">neokylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/network/" rel="tag">network</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oauth-2/" rel="tag">oauth-2</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oauth2/" rel="tag">oauth2</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/obs/" rel="tag">obs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ollama/" rel="tag">ollama</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/opendal/" rel="tag">opendal</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/option/" rel="tag">option</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oracle/" rel="tag">oracle</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/" rel="tag">oss</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/outofmemory/" rel="tag">outofmemory</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pdf/" rel="tag">pdf</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/play/" rel="tag">play</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/playframework/" rel="tag">playframework</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/playwright/" rel="tag">playwright</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/postgresql/" rel="tag">postgresql</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/proc-macro/" rel="tag">proc-macro</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/process/" rel="tag">process</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/promise/" rel="tag">promise</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/proto-2/" rel="tag">proto 2</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/proto-3/" rel="tag">proto 3</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/protobuf/" rel="tag">protobuf</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/proxy/" rel="tag">proxy</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pulsar/" rel="tag">pulsar</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/qt/" rel="tag">qt</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/quote/" rel="tag">quote</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/qwen3/" rel="tag">qwen3</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/qwen3-embedding/" rel="tag">qwen3-embedding</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/r2dbc/" rel="tag">r2dbc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/rag/" rel="tag">rag</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/reactive/" rel="tag">reactive</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/reactivemongo/" rel="tag">reactivemongo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/reactivestream/" rel="tag">reactivestream</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/reactor/" rel="tag">reactor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/realtime-etl/" rel="tag">realtime-etl</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/replication/" rel="tag">replication</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/rest/" rel="tag">rest</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/rig/" rel="tag">rig</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/route/" rel="tag">route</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/rust/" rel="tag">rust</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/rust-grpc-grpc-web-tonic-nextjs/" rel="tag">rust, grpc, grpc-web, tonic, nextjs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/" rel="tag">sbt</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scala/" rel="tag">scala</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scala-akka-actor/" rel="tag">scala, akka, actor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scala-logging/" rel="tag">scala-logging</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scala-script/" rel="tag">scala-script</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scala-web/" rel="tag">scala-web</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scalatest/" rel="tag">scalatest</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scala%E5%AE%9E%E6%88%98/" rel="tag">scala实战</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scheduler/" rel="tag">scheduler</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/script/" rel="tag">script</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sea-query/" rel="tag">sea-query</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/skill/" rel="tag">skill</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/slf4j/" rel="tag">slf4j</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/slick/" rel="tag">slick</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/slick-pg/" rel="tag">slick-pg</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark-sql/" rel="tag">spark sql</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spec-driven-development/" rel="tag">spec-driven-development</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sphinx-doc/" rel="tag">sphinx-doc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring/" rel="tag">spring</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-boot/" rel="tag">spring-boot</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-cloud/" rel="tag">spring-cloud</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-log/" rel="tag">spring-log</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlx/" rel="tag">sqlx</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssl/" rel="tag">ssl</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssl-config/" rel="tag">ssl-config</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/syn/" rel="tag">syn</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/system-manager/" rel="tag">system-manager</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tengine/" rel="tag">tengine</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/terminal/" rel="tag">terminal</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/test/" rel="tag">test</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tmux/" rel="tag">tmux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tokio/" rel="tag">tokio</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/toml/" rel="tag">toml</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/top-k/" rel="tag">top-k</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/try/" rel="tag">try</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/type/" rel="tag">type</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/typescript/" rel="tag">typescript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unix/" rel="tag">unix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/upgrading/" rel="tag">upgrading</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/upstream/" rel="tag">upstream</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/user-system/" rel="tag">user-system</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vibe-coding/" rel="tag">vibe-coding</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/" rel="tag">vim</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vm-overcommit-memory/" rel="tag">vm.overcommit_memory</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vue/" rel="tag">vue</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/wal/" rel="tag">wal</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/webflux/" rel="tag">webflux</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AD%E6%96%87%E5%AD%97%E7%AC%A6%E9%9B%86/" rel="tag">中文字符集</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%92%E6%93%8D%E4%BD%9C/" rel="tag">互操作</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%85%A5%E9%97%A8/" rel="tag">入门</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%8E%E4%B8%BA%E4%BA%91/" rel="tag">华为云</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/" rel="tag">反向代理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A9%E6%B0%94%E9%A2%84%E6%B5%8B/" rel="tag">天气预测</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E4%BD%9C/" rel="tag">工作</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/" rel="tag">年终总结</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BE%AE%E4%BF%A1%E5%BC%80%E5%8F%91/" rel="tag">微信开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" rel="tag">微服务</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84/" rel="tag">技术架构</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8A%80%E6%9C%AF%E9%80%89%E5%9E%8B/" rel="tag">技术选型</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%96%AD%E7%82%B9%E4%B8%8A%E4%BC%A0/" rel="tag">断点上传</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%96%AD%E7%82%B9%E4%B8%8B%E8%BD%BD/" rel="tag">断点下载</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B4%BB%E5%8A%A8%E6%8A%A5%E5%90%8D/" rel="tag">活动报名</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%88%AC%E8%99%AB/" rel="tag">爬虫</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F/" rel="tag">环境变量</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%9D%A1%E7%9C%A0/" rel="tag">睡眠</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AD%96%E6%9C%8D%E5%8A%A1/" rel="tag">策服务</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/" rel="tag">负载均衡</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/" rel="tag">软件工程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84/" rel="tag">软件架构</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%BB%E8%BE%91%E5%A4%8D%E5%88%B6/" rel="tag">逻辑复制</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%85%8D%E7%BD%AE/" rel="tag">配置</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%BF%E9%87%8C%E4%BA%91/" rel="tag">阿里云</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9B%86%E7%BE%A4/" rel="tag">集群</a><span class="tag-list-count">4</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-float">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/2025/" style="font-size: 10px;">2025</a> <a href="/tags/4a/" style="font-size: 10px;">4a</a> <a href="/tags/AI-%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">AI 编程</a> <a href="/tags/DDD/" style="font-size: 10px;">DDD</a> <a href="/tags/Go/" style="font-size: 10px;">Go</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Node/" style="font-size: 10px;">Node</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Scala/" style="font-size: 10px;">Scala</a> <a href="/tags/Sphinx-%E6%92%B0%E5%86%99-%E7%94%B5%E5%AD%90%E6%96%87%E6%A1%A3/" style="font-size: 10px;">Sphinx 撰写 电子文档</a> <a href="/tags/about/" style="font-size: 10px;">about</a> <a href="/tags/access-token/" style="font-size: 10px;">access_token</a> <a href="/tags/accesstoken/" style="font-size: 10px;">accesstoken</a> <a href="/tags/activemq/" style="font-size: 10px;">activemq</a> <a href="/tags/ai/" style="font-size: 13px;">ai</a> <a href="/tags/akka/" style="font-size: 19px;">akka</a> <a href="/tags/akka-http/" style="font-size: 11px;">akka http</a> <a href="/tags/akka-2-6/" style="font-size: 10px;">akka-2.6</a> <a href="/tags/akka-cluster/" style="font-size: 13px;">akka-cluster</a> <a href="/tags/akka-cluster-sharding/" style="font-size: 10px;">akka-cluster-sharding</a> <a href="/tags/akka-cookbook/" style="font-size: 10px;">akka-cookbook</a> <a href="/tags/akka-grpc/" style="font-size: 14px;">akka-grpc</a> <a href="/tags/akka-http/" style="font-size: 17px;">akka-http</a> <a href="/tags/akka-http-chinese/" style="font-size: 10px;">akka-http-chinese</a> <a href="/tags/akka-http-testkit/" style="font-size: 10px;">akka-http-testkit</a> <a href="/tags/akka-log/" style="font-size: 10px;">akka-log</a> <a href="/tags/akka-persistence/" style="font-size: 14px;">akka-persistence</a> <a href="/tags/akka-stream/" style="font-size: 12px;">akka-stream</a> <a href="/tags/akka-streams/" style="font-size: 11px;">akka-streams</a> <a href="/tags/akka-typed/" style="font-size: 12px;">akka-typed</a> <a href="/tags/akka%E5%AE%9E%E6%88%98/" style="font-size: 10px;">akka实战</a> <a href="/tags/alpakka/" style="font-size: 10px;">alpakka</a> <a href="/tags/alpakka-kafka/" style="font-size: 10px;">alpakka-kafka</a> <a href="/tags/ambari/" style="font-size: 11px;">ambari</a> <a href="/tags/api/" style="font-size: 11px;">api</a> <a href="/tags/api-design/" style="font-size: 10px;">api-design</a> <a href="/tags/at-least-once-delivery/" style="font-size: 10px;">at-least-once-delivery</a> <a href="/tags/axum/" style="font-size: 10px;">axum</a> <a href="/tags/bash/" style="font-size: 10px;">bash</a> <a href="/tags/batch-insert/" style="font-size: 10px;">batch-insert</a> <a href="/tags/book/" style="font-size: 11px;">book</a> <a href="/tags/c/" style="font-size: 12px;">c</a> <a href="/tags/c/" style="font-size: 11px;">c++</a> <a href="/tags/cassandra/" style="font-size: 14px;">cassandra</a> <a href="/tags/cdc/" style="font-size: 12px;">cdc</a> <a href="/tags/centos/" style="font-size: 10px;">centos</a> <a href="/tags/centos7/" style="font-size: 11px;">centos7</a> <a href="/tags/clap/" style="font-size: 10px;">clap</a> <a href="/tags/claude-code/" style="font-size: 12px;">claude-code</a> <a href="/tags/cluster/" style="font-size: 12px;">cluster</a> <a href="/tags/cluster-distributedata/" style="font-size: 10px;">cluster-distributedata</a> <a href="/tags/cluster-sharding/" style="font-size: 10px;">cluster-sharding</a> <a href="/tags/cluster-singleton/" style="font-size: 10px;">cluster-singleton</a> <a href="/tags/codex/" style="font-size: 10px;">codex</a> <a href="/tags/collection/" style="font-size: 10px;">collection</a> <a href="/tags/config/" style="font-size: 11px;">config</a> <a href="/tags/coordinated-shutdown/" style="font-size: 10px;">coordinated-shutdown</a> <a href="/tags/cqrs/" style="font-size: 10px;">cqrs</a> <a href="/tags/crawl4ai/" style="font-size: 10px;">crawl4ai</a> <a href="/tags/crawler/" style="font-size: 11px;">crawler</a> <a href="/tags/debezium/" style="font-size: 10px;">debezium</a> <a href="/tags/deepseek/" style="font-size: 10px;">deepseek</a> <a href="/tags/deepseek-r1/" style="font-size: 10px;">deepseek-r1</a> <a href="/tags/design-pattern/" style="font-size: 10px;">design-pattern</a> <a href="/tags/devops/" style="font-size: 11px;">devops</a> <a href="/tags/distribution/" style="font-size: 10px;">distribution</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/earth2studio/" style="font-size: 10px;">earth2studio</a> <a href="/tags/ebook/" style="font-size: 10px;">ebook</a> <a href="/tags/eclipse/" style="font-size: 10px;">eclipse</a> <a href="/tags/either/" style="font-size: 10px;">either</a> <a href="/tags/elasticsearch/" style="font-size: 12px;">elasticsearch</a> <a href="/tags/elt/" style="font-size: 10px;">elt</a> <a href="/tags/email/" style="font-size: 10px;">email</a> <a href="/tags/enum/" style="font-size: 12px;">enum</a> <a href="/tags/epub/" style="font-size: 10px;">epub</a> <a href="/tags/essay/" style="font-size: 10px;">essay</a> <a href="/tags/etl/" style="font-size: 11px;">etl</a> <a href="/tags/event-sourced/" style="font-size: 10px;">event-sourced</a> <a href="/tags/exactly-once/" style="font-size: 10px;">exactly-once</a> <a href="/tags/firewall/" style="font-size: 10px;">firewall</a> <a href="/tags/flink/" style="font-size: 11px;">flink</a> <a href="/tags/functional/" style="font-size: 10px;">functional</a> <a href="/tags/functions/" style="font-size: 10px;">functions</a> <a href="/tags/fusion-log/" style="font-size: 10px;">fusion-log</a> <a href="/tags/future/" style="font-size: 10px;">future</a> <a href="/tags/gatling/" style="font-size: 10px;">gatling</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/gitlab/" style="font-size: 10px;">gitlab</a> <a href="/tags/gradle/" style="font-size: 10px;">gradle</a> <a href="/tags/greenplum/" style="font-size: 10px;">greenplum</a> <a href="/tags/grpc/" style="font-size: 14px;">grpc</a> <a href="/tags/grpc-rust-tonic-prost-protobuf/" style="font-size: 10px;">grpc, rust, tonic, prost, protobuf</a> <a href="/tags/grpc-web-tonic-nice-grpc-rust-nextjs/" style="font-size: 10px;">grpc-web, tonic, nice-grpc, rust, nextjs</a> <a href="/tags/hadoop/" style="font-size: 11px;">hadoop</a> <a href="/tags/hanlp/" style="font-size: 10px;">hanlp</a> <a href="/tags/hdp/" style="font-size: 11px;">hdp</a> <a href="/tags/hive/" style="font-size: 10px;">hive</a> <a href="/tags/html5/" style="font-size: 10px;">html5</a> <a href="/tags/http-2/" style="font-size: 10px;">http-2</a> <a href="/tags/https/" style="font-size: 10px;">https</a> <a href="/tags/huggingface/" style="font-size: 10px;">huggingface</a> <a href="/tags/idea/" style="font-size: 10px;">idea</a> <a href="/tags/jackson/" style="font-size: 13px;">jackson</a> <a href="/tags/jackson-module-scala/" style="font-size: 10px;">jackson-module-scala</a> <a href="/tags/java/" style="font-size: 18px;">java</a> <a href="/tags/jdbc/" style="font-size: 11px;">jdbc</a> <a href="/tags/jenkins/" style="font-size: 11px;">jenkins</a> <a href="/tags/jenkins-pipeline/" style="font-size: 10px;">jenkins-pipeline</a> <a href="/tags/jenkinsfile/" style="font-size: 10px;">jenkinsfile</a> <a href="/tags/jquery/" style="font-size: 11px;">jquery</a> <a href="/tags/json/" style="font-size: 10px;">json</a> <a href="/tags/json4s/" style="font-size: 10px;">json4s</a> <a href="/tags/kafka/" style="font-size: 12px;">kafka</a> <a href="/tags/kimi-code/" style="font-size: 10px;">kimi-code</a> <a href="/tags/kind/" style="font-size: 10px;">kind</a> <a href="/tags/liftweb/" style="font-size: 11px;">liftweb</a> <a href="/tags/linux/" style="font-size: 15px;">linux</a> <a href="/tags/llama-cpp/" style="font-size: 10px;">llama.cpp</a> <a href="/tags/llm/" style="font-size: 10px;">llm</a> <a href="/tags/log/" style="font-size: 10px;">log</a> <a href="/tags/logical-replication/" style="font-size: 10px;">logical replication</a> <a href="/tags/logrotate/" style="font-size: 10px;">logrotate</a> <a href="/tags/mac/" style="font-size: 11px;">mac</a> <a href="/tags/macros/" style="font-size: 11px;">macros</a> <a href="/tags/mass-data/" style="font-size: 10px;">mass-data</a> <a href="/tags/mass-rdi/" style="font-size: 10px;">mass-rdi</a> <a href="/tags/maven/" style="font-size: 11px;">maven</a> <a href="/tags/milvus/" style="font-size: 10px;">milvus</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/mybatis/" style="font-size: 12px;">mybatis</a> <a href="/tags/mybatis-plus/" style="font-size: 11px;">mybatis-plus</a> <a href="/tags/mysql/" style="font-size: 11px;">mysql</a> <a href="/tags/nacos/" style="font-size: 10px;">nacos</a> <a href="/tags/neokylin/" style="font-size: 10px;">neokylin</a> <a href="/tags/network/" style="font-size: 10px;">network</a> <a href="/tags/nginx/" style="font-size: 13px;">nginx</a> <a href="/tags/oauth-2/" style="font-size: 10px;">oauth-2</a> <a href="/tags/oauth2/" style="font-size: 10px;">oauth2</a> <a href="/tags/obs/" style="font-size: 10px;">obs</a> <a href="/tags/ollama/" style="font-size: 11px;">ollama</a> <a href="/tags/opendal/" style="font-size: 10px;">opendal</a> <a href="/tags/option/" style="font-size: 10px;">option</a> <a href="/tags/oracle/" style="font-size: 10px;">oracle</a> <a href="/tags/oss/" style="font-size: 10px;">oss</a> <a href="/tags/outofmemory/" style="font-size: 10px;">outofmemory</a> <a href="/tags/pdf/" style="font-size: 10px;">pdf</a> <a href="/tags/play/" style="font-size: 10px;">play</a> <a href="/tags/playframework/" style="font-size: 12px;">playframework</a> <a href="/tags/playwright/" style="font-size: 11px;">playwright</a> <a href="/tags/postgresql/" style="font-size: 18px;">postgresql</a> <a href="/tags/proc-macro/" style="font-size: 11px;">proc-macro</a> <a href="/tags/process/" style="font-size: 10px;">process</a> <a href="/tags/promise/" style="font-size: 10px;">promise</a> <a href="/tags/proto-2/" style="font-size: 10px;">proto 2</a> <a href="/tags/proto-3/" style="font-size: 10px;">proto 3</a> <a href="/tags/protobuf/" style="font-size: 11px;">protobuf</a> <a href="/tags/proxy/" style="font-size: 10px;">proxy</a> <a href="/tags/pulsar/" style="font-size: 11px;">pulsar</a> <a href="/tags/python/" style="font-size: 13px;">python</a> <a href="/tags/qt/" style="font-size: 10px;">qt</a> <a href="/tags/quote/" style="font-size: 11px;">quote</a> <a href="/tags/qwen3/" style="font-size: 10px;">qwen3</a> <a href="/tags/qwen3-embedding/" style="font-size: 10px;">qwen3-embedding</a> <a href="/tags/r2dbc/" style="font-size: 10px;">r2dbc</a> <a href="/tags/rag/" style="font-size: 10px;">rag</a> <a href="/tags/reactive/" style="font-size: 12px;">reactive</a> <a href="/tags/reactivemongo/" style="font-size: 10px;">reactivemongo</a> <a href="/tags/reactivestream/" style="font-size: 10px;">reactivestream</a> <a href="/tags/reactor/" style="font-size: 10px;">reactor</a> <a href="/tags/realtime-etl/" style="font-size: 10px;">realtime-etl</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/replication/" style="font-size: 10px;">replication</a> <a href="/tags/rest/" style="font-size: 11px;">rest</a> <a href="/tags/rig/" style="font-size: 10px;">rig</a> <a href="/tags/route/" style="font-size: 10px;">route</a> <a href="/tags/rust/" style="font-size: 16px;">rust</a> <a href="/tags/rust-grpc-grpc-web-tonic-nextjs/" style="font-size: 10px;">rust, grpc, grpc-web, tonic, nextjs</a> <a href="/tags/sbt/" style="font-size: 13px;">sbt</a> <a href="/tags/scala/" style="font-size: 20px;">scala</a> <a href="/tags/scala-akka-actor/" style="font-size: 10px;">scala, akka, actor</a> <a href="/tags/scala-logging/" style="font-size: 10px;">scala-logging</a> <a href="/tags/scala-script/" style="font-size: 10px;">scala-script</a> <a href="/tags/scala-web/" style="font-size: 10px;">scala-web</a> <a href="/tags/scalatest/" style="font-size: 11px;">scalatest</a> <a href="/tags/scala%E5%AE%9E%E6%88%98/" style="font-size: 11px;">scala实战</a> <a href="/tags/scheduler/" style="font-size: 11px;">scheduler</a> <a href="/tags/script/" style="font-size: 10px;">script</a> <a href="/tags/sea-query/" style="font-size: 10px;">sea-query</a> <a href="/tags/shell/" style="font-size: 10px;">shell</a> <a href="/tags/skill/" style="font-size: 11px;">skill</a> <a href="/tags/slf4j/" style="font-size: 10px;">slf4j</a> <a href="/tags/slick/" style="font-size: 10px;">slick</a> <a href="/tags/slick-pg/" style="font-size: 10px;">slick-pg</a> <a href="/tags/spark/" style="font-size: 14px;">spark</a> <a href="/tags/spark-sql/" style="font-size: 10px;">spark sql</a> <a href="/tags/spec-driven-development/" style="font-size: 10px;">spec-driven-development</a> <a href="/tags/sphinx-doc/" style="font-size: 10px;">sphinx-doc</a> <a href="/tags/spring/" style="font-size: 17px;">spring</a> <a href="/tags/spring-boot/" style="font-size: 12px;">spring-boot</a> <a href="/tags/spring-cloud/" style="font-size: 10px;">spring-cloud</a> <a href="/tags/spring-log/" style="font-size: 10px;">spring-log</a> <a href="/tags/sqlx/" style="font-size: 10px;">sqlx</a> <a href="/tags/ssl/" style="font-size: 10px;">ssl</a> <a href="/tags/ssl-config/" style="font-size: 10px;">ssl-config</a> <a href="/tags/syn/" style="font-size: 11px;">syn</a> <a href="/tags/system-manager/" style="font-size: 10px;">system-manager</a> <a href="/tags/tengine/" style="font-size: 11px;">tengine</a> <a href="/tags/terminal/" style="font-size: 10px;">terminal</a> <a href="/tags/test/" style="font-size: 10px;">test</a> <a href="/tags/tmux/" style="font-size: 10px;">tmux</a> <a href="/tags/tokio/" style="font-size: 10px;">tokio</a> <a href="/tags/toml/" style="font-size: 10px;">toml</a> <a href="/tags/top-k/" style="font-size: 10px;">top-k</a> <a href="/tags/try/" style="font-size: 10px;">try</a> <a href="/tags/type/" style="font-size: 10px;">type</a> <a href="/tags/typescript/" style="font-size: 10px;">typescript</a> <a href="/tags/unix/" style="font-size: 10px;">unix</a> <a href="/tags/upgrading/" style="font-size: 10px;">upgrading</a> <a href="/tags/upstream/" style="font-size: 10px;">upstream</a> <a href="/tags/user-system/" style="font-size: 10px;">user-system</a> <a href="/tags/vibe-coding/" style="font-size: 10px;">vibe-coding</a> <a href="/tags/vim/" style="font-size: 10px;">vim</a> <a href="/tags/vm-overcommit-memory/" style="font-size: 10px;">vm.overcommit_memory</a> <a href="/tags/vue/" style="font-size: 10px;">vue</a> <a href="/tags/wal/" style="font-size: 10px;">wal</a> <a href="/tags/webflux/" style="font-size: 11px;">webflux</a> <a href="/tags/%E4%B8%AD%E6%96%87%E5%AD%97%E7%AC%A6%E9%9B%86/" style="font-size: 10px;">中文字符集</a> <a href="/tags/%E4%BA%92%E6%93%8D%E4%BD%9C/" style="font-size: 10px;">互操作</a> <a href="/tags/%E5%85%A5%E9%97%A8/" style="font-size: 10px;">入门</a> <a href="/tags/%E5%8D%8E%E4%B8%BA%E4%BA%91/" style="font-size: 10px;">华为云</a> <a href="/tags/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/" style="font-size: 10px;">反向代理</a> <a href="/tags/%E5%A4%A9%E6%B0%94%E9%A2%84%E6%B5%8B/" style="font-size: 10px;">天气预测</a> <a href="/tags/%E5%B7%A5%E4%BD%9C/" style="font-size: 11px;">工作</a> <a href="/tags/%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/" style="font-size: 10px;">年终总结</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E5%BE%AE%E4%BF%A1%E5%BC%80%E5%8F%91/" style="font-size: 11px;">微信开发</a> <a href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" style="font-size: 14px;">微服务</a> <a href="/tags/%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84/" style="font-size: 10px;">技术架构</a> <a href="/tags/%E6%8A%80%E6%9C%AF%E9%80%89%E5%9E%8B/" style="font-size: 10px;">技术选型</a> <a href="/tags/%E6%96%AD%E7%82%B9%E4%B8%8A%E4%BC%A0/" style="font-size: 10px;">断点上传</a> <a href="/tags/%E6%96%AD%E7%82%B9%E4%B8%8B%E8%BD%BD/" style="font-size: 10px;">断点下载</a> <a href="/tags/%E6%B4%BB%E5%8A%A8%E6%8A%A5%E5%90%8D/" style="font-size: 10px;">活动报名</a> <a href="/tags/%E7%88%AC%E8%99%AB/" style="font-size: 10px;">爬虫</a> <a href="/tags/%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F/" style="font-size: 10px;">环境变量</a> <a href="/tags/%E7%94%9F%E6%B4%BB/" style="font-size: 10px;">生活</a> <a href="/tags/%E7%9D%A1%E7%9C%A0/" style="font-size: 10px;">睡眠</a> <a href="/tags/%E7%AD%96%E6%9C%8D%E5%8A%A1/" style="font-size: 10px;">策服务</a> <a href="/tags/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/" style="font-size: 10px;">负载均衡</a> <a href="/tags/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/" style="font-size: 10px;">软件工程</a> <a href="/tags/%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84/" style="font-size: 10px;">软件架构</a> <a href="/tags/%E9%80%BB%E8%BE%91%E5%A4%8D%E5%88%B6/" style="font-size: 10px;">逻辑复制</a> <a href="/tags/%E9%85%8D%E7%BD%AE/" style="font-size: 10px;">配置</a> <a href="/tags/%E9%98%BF%E9%87%8C%E4%BA%91/" style="font-size: 10px;">阿里云</a> <a href="/tags/%E9%9B%86%E7%BE%A4/" style="font-size: 13px;">集群</a>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a target="_blank" rel="noopener" href="http://hexo.io">Hexo</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+            
+        
+    </div>
+</aside>
+
+                </div>
+            </div>
+        </div>
+        <footer id="footer">
+    <div class="container">
+        <div class="container-inner">
+            <a id="back-to-top" href="javascript:;"><i class="icon fa fa-angle-up"></i></a>
+            <div class="credit">
+                <h1 class="logo-wrap">
+                    <a href="/" class="logo"></a>
+                </h1>
+                <p>&copy; 2026 杨景</p>
+                
+                <p>Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="https://github.com/ppoffice" target="_blank">PPOffice</a></p>
+                
+            </div>
+            <div class="footer-plugins">
+              
+    
+
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+    </div>
+    
+
+
+    
+        
+<script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-share.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-video.min.js"></script>
+
+    
+    
+        
+<script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+    
+    
+
+    
+    
+    
+
+
+
+<!-- Custom Scripts -->
+
+<script src="/js/main.js"></script>
+
+
+</body>
+</html>
